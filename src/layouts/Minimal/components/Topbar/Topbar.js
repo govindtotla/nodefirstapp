@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'next/link';
+import Link from 'next/link';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -23,9 +23,9 @@ const Topbar = props => {
       color="primary"
       position="fixed">
       <Toolbar>
-        <RouterLink to="/">
+        <Link href="/">
           <img alt="Logo" src="/images/logos/logo--white.svg" />
-        </RouterLink>
+        </Link>
       </Toolbar>
     </AppBar>
   );

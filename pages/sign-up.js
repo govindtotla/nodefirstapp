@@ -1,4 +1,4 @@
-import SignIn from '@views/SignIn';
+import SignUp from '@views/SignUp';
 import { Minimal as Layout } from '@layouts';
 import Head from 'next/head';
 
@@ -9,7 +9,7 @@ const Login = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-    <SignIn />
+    <SignUp />
   </Layout>
 );
 

@@ -10,7 +10,8 @@
           "@components": "./src/components",
           "@theme": "./src/theme",
           "@views": "./src/views",
-          "@layouts": "./src/layouts"
+          "@layouts": "./src/layouts",
+          "@icons": "./src/icons"
         }
       }
     ]

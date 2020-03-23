@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import Link from 'next/link';
+
 import { UsersToolbar, UsersTable } from './components';
 import mockData from './data';
 
@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserList = () => {
+const ShapeList = () => {
   const classes = useStyles();
 
   const [users] = useState(mockData);
@@ -28,4 +28,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default ShapeList;

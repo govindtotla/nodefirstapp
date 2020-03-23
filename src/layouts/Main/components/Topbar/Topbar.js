@@ -32,7 +32,7 @@ const Topbar = props => {
       <Toolbar>
         <Link href="/">
           <a>
-            <img alt="Logo" src="/images/logos/logo--white.svg" />
+            <img alt="Logo" src="/images/logos/logo-old.png" />
           </a>
         </Link>
         <div className={classes.flexGrow} />

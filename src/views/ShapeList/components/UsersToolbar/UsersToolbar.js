@@ -46,13 +46,13 @@ const UsersToolbar = props => {
           color="primary"
           variant="contained"
         >
-          Add user
+          Add Shape
         </Button>
       </div>
       <div className={classes.row}>
         <SearchInput
           className={classes.searchInput}
-          placeholder="Search user"
+          placeholder="Search stone shape"
         />
       </div>
     </div>

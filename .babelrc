@@ -11,6 +11,7 @@
           "@theme": "./src/theme",
           "@views": "./src/views",
           "@layouts": "./src/layouts",
+          "@helpers": "./src/helpers",
           "@icons": "./src/icons"
         }
       }

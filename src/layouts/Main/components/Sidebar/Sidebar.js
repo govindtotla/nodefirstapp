@@ -12,6 +12,9 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
+import PaletteIcon from '@material-ui/icons/Palette';
+import ListIcon from '@material-ui/icons/List';
+
 import { Profile, SidebarNav, UpgradePlan } from './components';
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +57,21 @@ const Sidebar = props => {
       icon: <PeopleIcon />
     },
     {
+      title: 'Colors',
+      href: '/colors',
+      icon: <PaletteIcon />
+    },
+    {
+      title: 'Shapes',
+      href: '/shapes',
+      icon: <ListIcon />
+    },
+    {
+      title: 'Stones',
+      href: '/stones',
+      icon: <ListIcon />
+    },
+    {
       title: 'Products',
       href: '/products',
       icon: <ShoppingBasketIcon />
@@ -62,17 +80,7 @@ const Sidebar = props => {
       title: 'Authentication',
       href: '/sign-in',
       icon: <LockOpenIcon />
-    },
-    {
-      title: 'Typography',
-      href: '/typography',
-      icon: <TextFieldsIcon />
-    },
-    {
-      title: 'Icons',
-      href: '/icons',
-      icon: <ImageIcon />
-    },
+    },    
     {
       title: 'Account',
       href: '/account',
@@ -102,8 +110,7 @@ const Sidebar = props => {
         <SidebarNav
           className={classes.nav}
           pages={pages}
-        />
-        <UpgradePlan />
+        />        
       </div>
     </Drawer>
   );

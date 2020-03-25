@@ -6,6 +6,12 @@ import { Button } from '@material-ui/core';
 
 import { SearchInput } from '@components';
 
+const displayAdd = () => {
+    this.setState({
+        displayAdd: !this.state.displayAdd
+    })
+}
+
 const useStyles = makeStyles(theme => ({
   root: {},
   row: {
@@ -29,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersToolbar = props => {
+	
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -42,19 +49,13 @@ const UsersToolbar = props => {
         <span className={classes.spacer} />
         <Button className={classes.importButton}>Import</Button>
         <Button className={classes.exportButton}>Export</Button>
-        <Button
-          color="primary"
-          variant="contained"
-        >
-          Add Color
-        </Button>
       </div>
       <div className={classes.row}>
         <SearchInput
           className={classes.searchInput}
           placeholder="Search color"
         />
-      </div>
+      </div>      
     </div>
   );
 };

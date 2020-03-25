@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/styles';
 
 import { UsersToolbar, UsersTable } from './components';
 import mockData from './data';
+import { ColorInput } from '@components';
+
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,13 +20,25 @@ const ColorList = () => {
   const classes = useStyles();
 
   const [users] = useState(mockData);
-
+  
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };  
+  
   return (
-    <div className={classes.root}>
-      <UsersToolbar />
-      <div className={classes.content}>
-        <UsersTable users={users} />
-      </div>
+    <div className={classes.root}>    
+		<Grid container spacing={3}>
+			<Grid item xs={9}><UsersToolbar /></Grid>
+			<Grid item xs={3}><ColorInput /></Grid>
+		</Grid>
+		
+		<div className={classes.content}>
+			<UsersTable users={users} />
+		</div>
     </div>
   );
 };

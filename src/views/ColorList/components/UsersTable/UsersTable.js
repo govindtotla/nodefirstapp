@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import Link from 'next/link';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+
 import {
   Card,
   CardActions,
@@ -21,6 +23,8 @@ import {
 } from '@material-ui/core';
 
 import { getInitials } from '@helpers';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles(theme => ({
@@ -44,56 +48,66 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { className, users, ...rest } = props;
+	const { className, users, ...rest } = props;
+	const classes = useStyles();
+	const [selectedUsers, setSelectedUsers] = useState([]);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
+	const [page, setPage] = useState(0);
+	const ITEM_HEIGHT = 48;
+	
+	const handleSelectAll = event => {
+		const { users } = props;
 
-  const classes = useStyles();
+		let selectedUsers;
 
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+		if (event.target.checked) {
+		  selectedUsers = users.map(user => user.id);
+		} else {
+		  selectedUsers = [];
+		}
 
-  const handleSelectAll = event => {
-    const { users } = props;
+		setSelectedUsers(selectedUsers);
+	};
+	
+	const handleSelectOne = (event, id) => {
+		const selectedIndex = selectedUsers.indexOf(id);
+		let newSelectedUsers = [];
 
-    let selectedUsers;
+		if (selectedIndex === -1) {
+			newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
+		} else if (selectedIndex === 0) {
+			newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
+		} else if (selectedIndex === selectedUsers.length - 1) {
+			newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
+		} else if (selectedIndex > 0) {
+			newSelectedUsers = newSelectedUsers.concat(
+				selectedUsers.slice(0, selectedIndex),
+				selectedUsers.slice(selectedIndex + 1)
+			);
+		}
 
-    if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
-    } else {
-      selectedUsers = [];
-    }
+		setSelectedUsers(newSelectedUsers);
+	};
 
-    setSelectedUsers(selectedUsers);
-  };
+	const handlePageChange = (event, page) => {
+		setPage(page);
+	};
 
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedUsers.indexOf(id);
-    let newSelectedUsers = [];
+	const handleRowsPerPageChange = event => {
+		setRowsPerPage(event.target.value);
+	};
+	
+	const [anchorEl, setAnchorEl] = React.useState(null);
+	const open = Boolean(anchorEl);
 
-    if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-    } else if (selectedIndex === 0) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedUsers = newSelectedUsers.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedUsers(newSelectedUsers);
-  };
-
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
-
-  const handleRowsPerPageChange = event => {
-    setRowsPerPage(event.target.value);
-  };
-
+	const handleClick = event => {
+		setAnchorEl(event.currentTarget);
+	};
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+	
+	
   return (
     <Card
       {...rest}
@@ -149,9 +163,41 @@ const UsersTable = props => {
                      <IconButton
 						edge="end"
 						size="small"
+						aria-label="more"
+						aria-controls="long-menu"
+						aria-haspopup="true"
+						onClick={handleClick}
 					  >
 						<MoreVertIcon />
 					  </IconButton>
+					  <Menu
+						id="long-menu"
+						anchorEl={anchorEl}
+						keepMounted
+						open={open}
+						onClose={handleClose}
+						PaperProps={{
+						  style: {
+							maxHeight: ITEM_HEIGHT * 4.5,
+							width: '20ch',
+						  },
+						}}
+					  >
+						  <MenuItem onClick={handleClose}>
+						  <Link
+							  color="primary"
+							  href="/colors/edit/"
+							  underline="always"
+							  variant="h6">
+							  
+							  <a> Edit </a>
+							  
+							</Link>
+						  </MenuItem>
+						  
+						  <MenuItem onClick={handleClose}>Delete</MenuItem>
+						  
+					  </Menu>
                     </TableCell>
                   </TableRow>
                 ))}

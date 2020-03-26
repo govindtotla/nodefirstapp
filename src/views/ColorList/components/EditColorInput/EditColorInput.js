@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
-import SaveIcon from '@material-ui/icons/Save';
-
 import {
   Button,
   TextField,  
@@ -22,7 +20,7 @@ const useStyles = makeStyles(() => ({
 	  }
 }));
 
-const ColorInput = props => {
+const EditColorInput = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -54,10 +52,10 @@ const ColorInput = props => {
 		</div>
 		
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Add Color</DialogTitle>
+        <DialogTitle id="form-dialog-title">Update Color</DialogTitle>
         <form
-			action='/colors'
-			method='post'		
+			action='/colors/update'
+			method='put'		
 		  >
         <DialogContent>
           <TextField
@@ -87,10 +85,8 @@ const ColorInput = props => {
             color="primary"
             variant="outlined"
             type='submit'
-            startIcon={<SaveIcon />}
-            onClick={handleClose}
           >
-            Save
+            Update
           </Button>
         </DialogActions>
         </form>
@@ -99,10 +95,10 @@ const ColorInput = props => {
   );
 };
 
-ColorInput.propTypes = {
+EditColorInput.propTypes = {
   className: PropTypes.string,
   onChange: PropTypes.func,
   style: PropTypes.object
 };
 
-export default ColorInput;
+export default EditColorInput;

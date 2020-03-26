@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import { UsersToolbar, UsersTable } from './components';
+import { UsersToolbar, UsersTable, ColorInput } from './components';
 import mockData from './data';
-import { ColorInput } from '@components';
 
 import Grid from '@material-ui/core/Grid';
 

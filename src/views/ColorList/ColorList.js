@@ -1,10 +1,9 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import { UsersToolbar, UsersTable, ColorInput } from './components';
 import mockData from './data';
-
-import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,6 +16,8 @@ const useStyles = makeStyles(theme => ({
 
 const ColorList = () => {
   const classes = useStyles();
+  
+  const router = useRouter();
 
   const [users] = useState(mockData);
   
@@ -26,14 +27,14 @@ const ColorList = () => {
   };
   const handleClose = () => {
     setOpen(false);
-  };  
+  };
+  
+  
   
   return (
     <div className={classes.root}>    
-		<Grid container spacing={3}>
-			<Grid item xs={9}><UsersToolbar /></Grid>
-			<Grid item xs={3}><ColorInput /></Grid>
-		</Grid>
+		<UsersToolbar />
+		
 		
 		<div className={classes.content}>
 			<UsersTable users={users} />

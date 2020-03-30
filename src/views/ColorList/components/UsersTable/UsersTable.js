@@ -5,12 +5,13 @@ import moment from 'moment';
 import Link from 'next/link';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
   Checkbox,
   Table,
   TableBody,
@@ -23,14 +24,14 @@ import {
 } from '@material-ui/core';
 
 import { getInitials } from '@helpers';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
     padding: 0
+  },
+  spacer: {
+    flexGrow: 1
   },
   inner: {
     minWidth: 1050
@@ -38,9 +39,6 @@ const useStyles = makeStyles(theme => ({
   nameContainer: {
     display: 'flex',
     alignItems: 'center'
-  },
-  avatar: {
-    marginRight: theme.spacing(2)
   },
   actions: {
     justifyContent: 'flex-end'
@@ -53,7 +51,6 @@ const UsersTable = props => {
 	const [selectedUsers, setSelectedUsers] = useState([]);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [page, setPage] = useState(0);
-	const ITEM_HEIGHT = 48;
 	
 	const handleSelectAll = event => {
 		const { users } = props;
@@ -107,7 +104,6 @@ const UsersTable = props => {
 		setAnchorEl(null);
 	};
 	
-	
   return (
     <Card
       {...rest}
@@ -159,45 +155,9 @@ const UsersTable = props => {
                     <TableCell>
                       {user.colorAlias}
                     </TableCell>
-                    <TableCell>
-                     <IconButton
-						edge="end"
-						size="small"
-						aria-label="more"
-						aria-controls="long-menu"
-						aria-haspopup="true"
-						onClick={handleClick}
-					  >
-						<MoreVertIcon />
-					  </IconButton>
-					  <Menu
-						id="long-menu"
-						anchorEl={anchorEl}
-						keepMounted
-						open={open}
-						onClose={handleClose}
-						PaperProps={{
-						  style: {
-							maxHeight: ITEM_HEIGHT * 4.5,
-							width: '20ch',
-						  },
-						}}
-					  >
-						  <MenuItem onClick={handleClose}>
-						  <Link
-							  color="primary"
-							  href="/colors/edit/"
-							  underline="always"
-							  variant="h6">
-							  
-							  <a> Edit </a>
-							  
-							</Link>
-						  </MenuItem>
-						  
-						  <MenuItem onClick={handleClose}>Delete</MenuItem>
-						  
-					  </Menu>
+                    <TableCell className={classes.actions}>
+					  <Link href="#"><a><EditIcon color="primary" /></a></Link>
+					  <Link href="#"><a><DeleteIcon color="primary" /></a></Link>
                     </TableCell>
                   </TableRow>
                 ))}

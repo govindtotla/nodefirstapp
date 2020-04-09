@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-
-import { UsersToolbar, UsersTable, ColorInput } from './components';
 import mockData from './data';
 
+import { UsersToolbar, UsersTable, ColorInput } from './components';
+/* import * as fetch from 'isomorphic-fetch'   import fetch from 'isomorphic-unfetch'; */
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -14,30 +14,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ColorList = () => {
-  const classes = useStyles();
-  
+const ColorList = props => {
+		
+  const classes = useStyles();  
   const router = useRouter();
-
-  const [users] = useState(mockData);
-  
+  const colors = props.colors;
   const [open, setOpen] = React.useState(false);
+  
   const handleClickOpen = () => {
     setOpen(true);
-  };
+  };  
   const handleClose = () => {
     setOpen(false);
   };
   
-  
-  
-  return (
-    <div className={classes.root}>    
+  return ( 
+    <div className={classes.root}>		  
 		<UsersToolbar />
-		
-		
 		<div className={classes.content}>
-			<UsersTable users={users} />
+			<UsersTable colors={colors} />
 		</div>
     </div>
   );

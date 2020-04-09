@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CustomRouterLink = ({ className, href, hrefAs, children, prefetch }) => (
-  <Link href={href} as={hrefAs} prefetch>
+  <Link href={href} as={hrefAs}>
     <a className={className}>{children}</a>
   </Link>
 );

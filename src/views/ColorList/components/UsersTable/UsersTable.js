@@ -46,19 +46,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-	const { className, users, ...rest } = props;
+	const { className, colors, ...rest } = props;
 	const classes = useStyles();
 	const [selectedUsers, setSelectedUsers] = useState([]);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [page, setPage] = useState(0);
 	
 	const handleSelectAll = event => {
-		const { users } = props;
+		const { colors } = props;
 
 		let selectedUsers;
 
 		if (event.target.checked) {
-		  selectedUsers = users.map(user => user.id);
+		  selectedUsers = colors.map(color => color.id);
 		} else {
 		  selectedUsers = [];
 		}
@@ -67,6 +67,7 @@ const UsersTable = props => {
 	};
 	
 	const handleSelectOne = (event, id) => {
+		
 		const selectedIndex = selectedUsers.indexOf(id);
 		let newSelectedUsers = [];
 
@@ -117,7 +118,7 @@ const UsersTable = props => {
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedUsers.length === users.length}
+                      checked={selectedUsers.length === colors.length}
                       color="primary"
                       indeterminate={
                         selectedUsers.length > 0 &&
@@ -132,28 +133,28 @@ const UsersTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.slice(0, rowsPerPage).map(user => (
+                {colors.slice(0, rowsPerPage).map(color => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={user.id}
-                    selected={selectedUsers.indexOf(user.id) !== -1}
+                    key={color.id}
+                    selected={selectedUsers.indexOf(color.product_id) !== -1}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedUsers.indexOf(user.id) !== -1}
+                        checked={selectedUsers.indexOf(color.product_id) !== -1}
                         color="primary"
-                        onChange={event => handleSelectOne(event, user.id)}
+                        onChange={event => handleSelectOne(event, color.product_id)}
                         value="true"
                       />
                     </TableCell>
                     <TableCell>
                       <div className={classes.nameContainer}>
-                        <Typography variant="body1">{user.name}</Typography>
+                        <Typography variant="body1">{color.model}</Typography>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {user.colorAlias}
+                      {color.custom_label}
                     </TableCell>
                     <TableCell className={classes.actions}>
 					  <Link href="#"><a><EditIcon color="primary" /></a></Link>
@@ -169,7 +170,7 @@ const UsersTable = props => {
       <CardActions className={classes.actions}>
         <TablePagination
           component="div"
-          count={users.length}
+          count={colors.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleRowsPerPageChange}
           page={page}

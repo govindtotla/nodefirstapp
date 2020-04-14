@@ -15,7 +15,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PaletteIcon from '@material-ui/icons/Palette';
 import ListIcon from '@material-ui/icons/List';
 
-import { Profile, SidebarNav, UpgradePlan } from './components';
+import { Profile, SidebarNav } from './components';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -69,6 +69,16 @@ const Sidebar = props => {
     {
       title: 'Stones',
       href: '/stones',
+      icon: <ListIcon />
+    },
+    {
+      title: 'Categories',
+      href: '/categories',
+      icon: <ListIcon />
+    },
+    {
+      title: 'Price',
+      href: '/prices',
       icon: <ListIcon />
     },
     {

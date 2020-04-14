@@ -45,20 +45,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UsersTable = props => {
-	const { className, colors, ...rest } = props;
+const StoneTable = props => {
+	const { className, stones, ...rest } = props;
 	const classes = useStyles();
 	const [selectedUsers, setSelectedUsers] = useState([]);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [page, setPage] = useState(0);
-	
+		
 	const handleSelectAll = event => {
-		const { colors } = props;
+		const { stones } = props;
 
 		let selectedUsers;
 
 		if (event.target.checked) {
-		  selectedUsers = colors.map(color => color._id);
+		  selectedUsers = stones.map(stone => stone.id);
 		} else {
 		  selectedUsers = [];
 		}
@@ -118,44 +118,49 @@ const UsersTable = props => {
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedUsers.length === colors.length}
+                      checked={selectedUsers.length === stones.length}
                       color="primary"
                       indeterminate={
                         selectedUsers.length > 0 &&
-                        selectedUsers.length < colors.length
+                        selectedUsers.length < stones.length
                       }
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>Color Name</TableCell>
-                  <TableCell>Color Alias Name</TableCell>
+                  <TableCell>Stone Name</TableCell>
+                  <TableCell>Faux</TableCell>
+                  <TableCell>Store Category Id</TableCell>
+                  <TableCell>Stone Color</TableCell>
                   <TableCell>&nbsp;</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {colors.slice(0, rowsPerPage).map(color => (
+                {stones.slice(0, rowsPerPage).map(stone => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={color._id}
-                    selected={selectedUsers.indexOf(color._id) !== -1}
+                    key={stone.id}
+                    selected={selectedUsers.indexOf(stone.id) !== -1}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedUsers.indexOf(color._id) !== -1}
+                        checked={selectedUsers.indexOf(stone.id) !== -1}
                         color="primary"
-                        onChange={event => handleSelectOne(event, color._id)}
+                        onChange={event => handleSelectOne(event, stone.id)}
                         value="true"
                       />
                     </TableCell>
                     <TableCell>
                       <div className={classes.nameContainer}>
-                        <Typography variant="body1">{color.color_name}</Typography>
+                        <Typography variant="body1">{stone.stone_name}</Typography>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      {color.color_alias_name}
-                    </TableCell>
+                    
+                    <TableCell>{stone.faux}</TableCell>
+                    <TableCell>{stone.store_category_id}</TableCell>
+                    <TableCell>{stone.color}</TableCell>
+                    
+                    
                     <TableCell className={classes.actions}>
 					  <Link href="#"><a><EditIcon color="primary" /></a></Link>
 					  <Link href="#"><a><DeleteIcon color="primary" /></a></Link>
@@ -170,7 +175,7 @@ const UsersTable = props => {
       <CardActions className={classes.actions}>
         <TablePagination
           component="div"
-          count={colors.length}
+          count={stones.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleRowsPerPageChange}
           page={page}
@@ -182,9 +187,9 @@ const UsersTable = props => {
   );
 };
 
-UsersTable.propTypes = {
+StoneTable.propTypes = {
   className: PropTypes.string,
-  colors: PropTypes.array.isRequired
+  stones: PropTypes.array.isRequired
 };
 
-export default UsersTable;
+export default StoneTable;

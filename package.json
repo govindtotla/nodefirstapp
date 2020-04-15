@@ -8,6 +8,9 @@
     "build": "next build",
     "start": "node server.js"
   },
+  "engines": {
+        "node": "13.8.0"
+  },
   "dependencies": {
     "@material-ui/core": "^4.9.5",
     "@material-ui/icons": "^4.9.1",

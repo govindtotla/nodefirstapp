@@ -15,14 +15,15 @@ const Colors = props => (
 );
 
 
-Colors.getInitialProps = async function() {
-  const res = await fetch('/api/colors');
-  const data = await res.json();
-  console.log(`Show data fetched. Count: ${data.length}`);
-  return {
-    colors: data.map(entry => entry)
-  };
+Colors.getInitialProps = async ({ req }) => {
+	
+	const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
+	const res = await fetch(baseUrl + '/api/colors');
+	const data = await res.json();
+	
+	console.log(`Show data fetched. Count: ${data.length}`);
+	return {
+		colors: data
+	};
 };
-
-
 export default Colors;

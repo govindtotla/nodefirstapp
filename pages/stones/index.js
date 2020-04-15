@@ -15,13 +15,16 @@ const Stones = props => (
 );
 
 
-Stones.getInitialProps = async function() {
-  const res = await fetch('/api/stones');
-  const data = await res.json();
-  console.log(`Show data fetched. Count: ${data.length}`);
-  return {
-    stones: data
-  };
+Stones.getInitialProps = async ({ req }) => {
+	
+	const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
+	const res = await fetch(baseUrl + '/api/stones');
+	const data = await res.json();
+	
+	console.log(`Show data fetched. Count: ${data.length}`);
+	return {
+		stones: data
+	};
 };
 
 export default Stones;

@@ -14,7 +14,7 @@ const Stones = props => (
   </Layout>
 );
 
-
+/*
 Stones.getInitialProps = async function() {
   const res = await fetch('http://localhost:8080/api/stones');
   const data = await res.json();
@@ -23,6 +23,30 @@ Stones.getInitialProps = async function() {
     stones: data
   };
 };
+*/
+
+
+
+Stones.getInitialProps = async ctx => {
+  if (ctx.req) {
+    const host = ctx.req.headers['x-forwarded-host'];
+    const proto = ctx.req.headers['x-forwarded-proto'];
+    const port =  ctx.req.headers['x-forwarded-port'];
+
+    const res = await fetch(`${proto}//${host}:${port}/api/stones`);
+    const json = await res.json();
+    
+    return { stones: json };
+  } else {
+    // otherwise we are in the browser
+    const res = await fetch(`/api/posts`);
+
+    const json = await res.json();
+    return { stones: json };
+  }
+}
+
+
 
 
 export default Stones;

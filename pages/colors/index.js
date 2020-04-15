@@ -16,7 +16,7 @@ const Colors = props => (
 
 
 Colors.getInitialProps = async function() {
-  const res = await fetch('http://localhost:8080/api/colors');
+  const res = await fetch('/api/colors');
   const data = await res.json();
   console.log(`Show data fetched. Count: ${data.length}`);
   return {

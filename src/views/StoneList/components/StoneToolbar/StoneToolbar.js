@@ -103,8 +103,7 @@ const StoneToolbar = props => {
 				<form
 					action='/stones'
 					method='post'		
-				  >
-				
+				  >				
 				  <TextField
 					fullWidth
 					label="Stone Name"
@@ -131,8 +130,7 @@ const StoneToolbar = props => {
 					style={{ marginTop: '1rem' }}
 					type="text"
 					variant="outlined"
-				  />
-				  
+				  />			  
 				  
 					<InputLabel shrink id="demo-simple-select-placeholder-label-label">
 					  Faux Value

@@ -25,7 +25,7 @@ exports.delete = function(req, res) {
 
 exports.add = function(req, res) {
   let shape = new Shape({
-    shape_name: req.body.shape_name
+    shape_name: req.body.shape_name,
     if_ebay: req.body.if_ebay
   });
   shape.save(function(err, shape) {

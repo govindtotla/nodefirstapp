@@ -4,11 +4,15 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
+
+import Link from 'next/link';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
   Checkbox,
   Table,
   TableBody,
@@ -16,12 +20,8 @@ import {
   TableHead,
   TableRow,
   Typography,
-  IconButton,
   TablePagination
 } from '@material-ui/core';
-
-import { getInitials } from '@helpers';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -35,16 +35,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center'
   },
-  avatar: {
-    marginRight: theme.spacing(2)
-  },
   actions: {
     justifyContent: 'flex-end'
   }
 }));
 
 const UsersTable = props => {
-  const { className, users, ...rest } = props;
+  const { className, shapes, ...rest } = props;
 
   const classes = useStyles();
 
@@ -53,12 +50,12 @@ const UsersTable = props => {
   const [page, setPage] = useState(0);
 
   const handleSelectAll = event => {
-    const { users } = props;
+    const { shapes } = props;
 
     let selectedUsers;
 
     if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
+      selectedUsers = shapes.map(shape => shape._id);
     } else {
       selectedUsers = [];
     }
@@ -107,11 +104,11 @@ const UsersTable = props => {
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedUsers.length === users.length}
+                      checked={selectedUsers.length === shapes.length}
                       color="primary"
                       indeterminate={
                         selectedUsers.length > 0 &&
-                        selectedUsers.length < users.length
+                        selectedUsers.length < shapes.length
                       }
                       onChange={handleSelectAll}
                     />
@@ -121,33 +118,29 @@ const UsersTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.slice(0, rowsPerPage).map(user => (
+                {shapes.slice(0, rowsPerPage).map(shape => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={user.id}
-                    selected={selectedUsers.indexOf(user.id) !== -1}
+                    key={shape._id}
+                    selected={selectedUsers.indexOf(shape._id) !== -1}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedUsers.indexOf(user.id) !== -1}
+                        checked={selectedUsers.indexOf(shape._id) !== -1}
                         color="primary"
-                        onChange={event => handleSelectOne(event, user.id)}
+                        onChange={event => handleSelectOne(event, shape._id)}
                         value="true"
                       />
                     </TableCell>
                     <TableCell>
                       <div className={classes.nameContainer}>
-                        <Typography variant="body1">{user.name}</Typography>
+                        <Typography variant="body1">{shape.shape_name}</Typography>
                       </div>
                     </TableCell>                    
                     <TableCell>
-                     <IconButton
-						edge="end"
-						size="small"
-					  >
-						<MoreVertIcon />
-					  </IconButton>
+                     <Link href="#"><a><EditIcon color="primary" /></a></Link>
+					  <Link href="#"><a><DeleteIcon color="primary" /></a></Link>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -159,7 +152,7 @@ const UsersTable = props => {
       <CardActions className={classes.actions}>
         <TablePagination
           component="div"
-          count={users.length}
+          count={shapes.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleRowsPerPageChange}
           page={page}
@@ -173,7 +166,7 @@ const UsersTable = props => {
 
 UsersTable.propTypes = {
   className: PropTypes.string,
-  users: PropTypes.array.isRequired
+  shapes: PropTypes.array.isRequired
 };
 
 export default UsersTable;

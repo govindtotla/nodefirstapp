@@ -28,7 +28,7 @@ const ColorList = props => {
   
   return ( 
     <div className={classes.root}>		  
-		<UsersToolbar />
+		<UsersToolbar colors={colors} />
 		
 		<div className={classes.content}>
 			<UsersTable colors={colors} />

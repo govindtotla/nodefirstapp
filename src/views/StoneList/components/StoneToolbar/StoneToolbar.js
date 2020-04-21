@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
-
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { SearchInput } from '@components';
-
 import Drawer from '@material-ui/core/Drawer';
 import SaveIcon from '@material-ui/icons/Save';
 
@@ -13,11 +11,13 @@ import {
   TextField,
   Card,
   CardContent,
-  CardActions,
+  CardActions,  
+  Input,
   InputLabel,
   MenuItem,
   FormControl,
-  Select
+  Select,
+  Chip
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -39,34 +39,68 @@ const useStyles = makeStyles(theme => ({
   },
   searchInput: {
     marginRight: theme.spacing(1)
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    fullWidth: true,
+    display: 'flex',
+    wrap: 'nowrap'
+  },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: 300,
+  },
+  chip: {
+    margin: 2,
   }
 }));
 
 const StoneToolbar = props => {
-	
-  const { className, ...rest } = props;
 
-  const classes = useStyles();
-  
+	const names = [
+	  'Oliver Hansen',
+	  'Van Henry',
+	  'April Tucker',
+	  'Ralph Hubbard',
+	  'Omar Alexander',
+	  'Carlos Abbott',
+	  'Miriam Wagner',
+	  'Bradley Wilkerson',
+	  'Virginia Andrews',
+	  'Kelly Snyder',
+	  'Kelly 1',
+	  'Kelly 2',
+	  'Kelly 3',
+	  'Kelly 4',
+	  'Kelly 5',
+	];	
+  const { className, ...rest } = props;
+  const classes = useStyles();  
   const handleChange = event => {
     setValues({
       ...values,
       [event.target.name]: event.target.value
     });
   };
+
+  const theme = useTheme();
+  const [personName, setPersonName] = React.useState([]);
+
+  const selectHandleChange = (event) => {
+    setPersonName(event.target.value);
+  };
   
   const [state, setState] = React.useState({
     right: false
   });
-  
+    
   const toggleDrawer = (anchor, open, data) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setState({ ...state, [anchor]: open, data });
   };
-  
 
   return (
     <div
@@ -103,7 +137,8 @@ const StoneToolbar = props => {
 				<form
 					action='/stones'
 					method='post'		
-				  >				
+				  >
+				  
 				  <TextField
 					fullWidth
 					label="Stone Name"
@@ -112,6 +147,7 @@ const StoneToolbar = props => {
 					type="text"
 					variant="outlined"
 				  />
+				  
 				  <TextField
 					fullWidth
 					label="Store Category Id"
@@ -122,58 +158,82 @@ const StoneToolbar = props => {
 					variant="outlined"
 				  />
 				  
-				  <TextField
-					fullWidth
-					label="Stone Color"
-					name="store_color_id"
-					onChange={handleChange}
-					style={{ marginTop: '1rem' }}
-					type="text"
-					variant="outlined"
-				  />			  
-				  
-					<InputLabel shrink id="demo-simple-select-placeholder-label-label">
-					  Faux Value
-					</InputLabel>
+				  <FormControl className={classes.formControl}>
+					<InputLabel id="color_id-label">Select Color</InputLabel>
 					<Select
-						name="faux_id"
-					  labelId="demo-simple-select-placeholder-label-label"
-					  id="demo-simple-select-placeholder-label"
-					  value=""				  
-					  displayEmpty
-					  className={classes.selectEmpty}
+					  labelId="color_id-label"
+					  name="color_id"
+					  multiple
+					  style={{ marginTop: '1rem' }}
+					  value={personName}
+					  onChange={selectHandleChange}
+					  input={<Input id="select-multiple-chip" />}
+					  renderValue={(selected) => (
+						<div className={classes.chips}>
+						  {selected.map((value) => (
+							<Chip key={value} label={value} className={classes.chip} />
+						  ))}
+						</div>
+					  )}					  
+					>
+					  {names.map((name) => (
+						<MenuItem key={name} value={name}>
+						  {name}
+						</MenuItem>
+					  ))}
+					</Select>
+				  </FormControl>
+				  
+				  <TextField
+					  id="outlined-select-faux"
+					  select
+					  fullWidth
+					  name="faux_id"
+					  label="Select Faux"
+					  variant="outlined"
+					  style={{ marginTop: '1rem' }}
 					>
 					  <MenuItem value=""><em>None</em></MenuItem>
 					  <MenuItem value={10}>Ten</MenuItem>
 					  <MenuItem value={20}>Twenty</MenuItem>
 					  <MenuItem value={30}>Thirty</MenuItem>
-					</Select>				
-				  		 
-				  
-				  <TextField
-					fullWidth
-					label="Website Stone Alias"
-					name="web_stone_id"
-					onChange={handleChange}
-					style={{ marginTop: '1rem' }}
-					type="text"
-					variant="outlined"
-				  />
-				  
-				  <TextField
-					fullWidth
-					label="Stone Default Image"
-					name="stone_image"
-					onChange={handleChange}
-					style={{ marginTop: '1rem' }}
-					type="file"
-					variant="outlined"
-				  />
-				  
-				  <CardActions>
+					</TextField>					
+					
+					<TextField
+					  id="outlined-select-web_stone"
+					  select
+					  fullWidth
+					  name="web_stone_id"
+					  label="Select Stone for Website"
+					  helperText="Leave Blank if it is primary stone"
+					  variant="outlined"
+					  style={{ marginTop: '1rem' }}
+					>
+					  <MenuItem value=""><em>None</em></MenuItem>
+					  <MenuItem value={10}>Ten</MenuItem>
+					  <MenuItem value={20}>Twenty</MenuItem>
+					  <MenuItem value={30}>Thirty</MenuItem>
+					</TextField>
+					
+					<input
+					  accept="image/*"
+					  className={classes.input}
+					  style={{ display: 'none' }}
+					  id="raised-button-file"
+					  name="stone_image"
+					  type="file"
+					/>
+					<label htmlFor="raised-button-file">
+					  <Button color="primary" variant="raised" component="span" className={classes.button}>
+						Upload Stone Image
+					  </Button>
+					</label>	
+					
+				  <CardActions style={{ marginTop: '1rem' }}>
 				  <Button onClick={toggleDrawer("add", false)} color="primary">
 					Cancel
-				  </Button>          
+				  </Button>
+				  
 				  <Button
 					color="primary"
 					variant="outlined"

@@ -65,7 +65,7 @@ class UsersToolbar extends Component {
 	  };
 	
 	render() {
-		const { classes, className, ...rest } = this.props;
+		const { classes, colors, className, ...rest } = this.props;
 		const toggleDrawer = (anchor, open, data) => event => {
 			if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
 			  return;
@@ -103,7 +103,7 @@ class UsersToolbar extends Component {
 					>
 					  <CardContent className={classes.content}>
 					
-						<h2 id="form-dialog-title">Add Color</h2>
+						<h2 id="form-dialog-title">Add Color  { colors.length }</h2>
 						<form
 							onSubmit={this.handleSubmit}
 						  >

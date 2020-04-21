@@ -11,21 +11,19 @@ var next 		= require('next');
 var dev 		= process.env.NODE_ENV !== 'production'
 var app 		= next({ dev });
 var handle 		= app.getRequestHandler();
+var routes 		= require("./app/routes/");
+var port 		= process.env.PORT || 8080;// set our port
 
-app.prepare().then(() => {
-	
-	var server = express(); // define our app using express  
-	// configure app to use bodyParser()
-	// this will let us get the data from a POST
-	server.use(bodyParser.urlencoded({ extended: true }));
-	server.use(bodyParser.json());
-	  
-	const dbURI = "mongodb+srv://zeit-C90vZchtDVmFzTVrNFetQE9J:Passw0rd@gemexi1-kwqju.mongodb.net";
-	const options = {
+const dbURI = "mongodb+srv://zeit-C90vZchtDVmFzTVrNFetQE9J:Passw0rd@gemexi1-kwqju.mongodb.net";
+const dbOptions = {
 	  useNewUrlParser: true,
 	  dbName: "gemexi1"
 	};
-	mongoose.connect(dbURI, options).then(
+
+
+app.prepare().then(() => {
+	
+	mongoose.connect(dbURI, dbOptions).then(
 	 () => {
 	   console.log("Database connection established!");
 	 },
@@ -33,17 +31,25 @@ app.prepare().then(() => {
 	   console.log("Error connecting Database instance due to: ", err);
 	 }
 	);
-		
-	var Color     = require('./app/models/color');
-	var port = process.env.PORT || 8080;// set our port
 	
+	const db = mongoose.connection;
+	
+	var server = express(); // define our app using express  
+	server.use(bodyParser.urlencoded({ extended: true }));
+	server.use(bodyParser.json());
+	server.use("/api", routes);
+	
+	//var Color     = require('./app/models/color');
 	// middleware to use for all requests
 	server.use(function(req, res, next) {
 		// do logging
+		req.db = db;
 		console.log('Something is happening.');
 		next(); // make sure we go to the next routes and don't stop here
 	});
-
+	
+	
+/*
 	server.post('/api/colors', function(req, res) {
 		var color = new Color();      // create a new instance of the Bear model
 		color.color_name = req.body.color_name;  // set the bears name (comes from the request)
@@ -69,7 +75,7 @@ app.prepare().then(() => {
 				{id:2, stone_name : "turquoise azurite", faux : "Natural", store_category_id : 6810090015, color : "BLUE, GREEN,"},
 				{id:3, stone_name : "HESSONITE GARNET", faux : "Natural", store_category_id : 6810090015, color : "ORANGE,"}]);
 	 });
-	 	
+	 	*/
 	server.get('*', (req, res) => {
 		return handle(req, res)
 	});
@@ -78,5 +84,4 @@ app.prepare().then(() => {
 	// =============================================================================
 	server.listen(port);
 	console.log('Magic happens on port ' + port);
-
 });

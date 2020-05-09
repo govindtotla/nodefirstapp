@@ -14,7 +14,7 @@ exports.stones = function(req, res) {
 };
 
 exports.delete = function(req, res) {
-  var stone = Stone.remove({
+  var stone = Stone.deleteOne({
 		_id: req.params.stone_id
 	}, function(err, stone) {
 		if (err)

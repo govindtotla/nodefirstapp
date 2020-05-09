@@ -144,7 +144,7 @@ class UsersTable extends Component {
   render() {
 
 		const { className, classes, ...rest } = this.props;
-		const { shapes, rowsPerPage, page, selectedUsers } = this.state;
+		const { shapes, rowsPerPage, page, selectedUsers, FilterString } = this.state;
 				
 		return (
 			<Card
@@ -170,14 +170,15 @@ class UsersTable extends Component {
 						  </TableCell>
 						  <TableCell>Stone Shape Name</TableCell>
 						  <TableCell>If Ebay</TableCell>
-						  <TableCell>&nbsp;</TableCell>
+						  <TableCell>&nbsp; {FilterString}</TableCell>
 						</TableRow>
 					  </TableHead>
-					  <TableBody>              
-						  {(this.state.rowsPerPage > 0
+					  <TableBody>   
+					  
+					  	  {(this.state.rowsPerPage > 0
 							? shapes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							: shapes
-						  ).map(shape => (
+						  ).filter(shape => shape.shape_name.toLowerCase().includes("ba") ).map(shape => (
 						  <TableRow
 							className={classes.tableRow}
 							hover

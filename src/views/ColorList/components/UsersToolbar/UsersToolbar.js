@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
+
 import { makeStyles } from '@material-ui/styles';
 import { withStyles } from '@material-ui/core/styles';
 import { SearchInput } from '@components';
@@ -23,15 +22,6 @@ class UsersToolbar extends Component {
     }
 
     getInitialState = () => {		
-      const initialState = {
-		open : false,
-        loading: false,
-        edit: false,
-        colorData: {
-          color_name: "",
-          color_alias_name: ""
-         }
-      };
       return initialState;
     };
 
@@ -74,87 +64,12 @@ class UsersToolbar extends Component {
 		};
 				
 		return (
-			<div		 
-			  className={clsx(classes.root, className)}
-			>
-			  <div className={classes.row}>
-				<span className={classes.spacer} />
-				<Button className={classes.importButton}>Import</Button>
-				<Button className={classes.exportButton}>Export</Button>
-				<Button
-					color="primary"
-					variant="contained"
-					onClick={toggleDrawer("add-color", true)}
-				>Add Color</Button>
-			  </div>
-			  <div className={classes.row}>
-				<SearchInput
-				  className={classes.searchInput}
-				  placeholder="Search color"
-				/>
-			  </div>
-			  
-			<React.Fragment key="add-color">
-			  <Drawer anchor="right" open={this.state["add-color"]} onClose={toggleDrawer("add-color", false)}>
-				<Card
-				  {...rest}
-				  className={clsx(classes.root, className)}
-				>
-				  <CardContent className={classes.content}>
-				
-					<h2 id="form-dialog-title">Add Color  { colors.length }</h2>
-					<form
-						onSubmit={this.handleSubmit}
-					  >
-					  <TextField
-						fullWidth
-						label="Color Name"
-						name="color_name"
-						onChange={this.handleChange}
-						type="text"
-						variant="outlined"
-					  />
-					  <TextField
-						fullWidth
-						label="Color Name Alias"
-						name="color_alias_name"
-						onChange={this.handleChange}
-						style={{ marginTop: '1rem' }}
-						type="text"
-						variant="outlined"
-					  />
-					  
-					  <CardActions>
-						  <Button
-							color="primary"
-							variant="contained"
-							type='submit'
-							startIcon={<SaveIcon />}
-						  >
-							Save
-						  </Button>							  
-						  <Button
-							color="secondary"
-							variant="contained"
-							onClick={toggleDrawer("add-color", false)}
-						  >
-							Cancel
-						  </Button>
-					  </CardActions>
-					</form>
-				</CardContent>
-				</Card>
-			  </Drawer>
-			</React.Fragment>			           
-			</div>
+			<div></div>
 			);
 		};
 }
 
-UsersToolbar.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
+
 
 const useStyles = theme => ({
 	  root: {},

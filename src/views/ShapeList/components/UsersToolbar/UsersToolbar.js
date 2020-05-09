@@ -26,7 +26,8 @@ class UsersToolbar extends Component {
     getInitialState = () => {		
       const initialState = {
 		ShowForm : false,
-        edit: false,      
+        edit: false,   
+        FilterString : "",   
 		shape_name: "",
 		if_ebay: "",       
          if_ebay_val : [
@@ -53,12 +54,7 @@ class UsersToolbar extends Component {
     }
     
 	SearchShape = event => {
-		let strin	=	event.target.value;
-		
-		console.log(strin);
-		this.setState((prevState) => ({
-			shapes: prevState.shapes.filter(shape => shape.if_ebay == 0),
-		}));
+		this.setState({ FilterString : event.target.value });
     }
 	
 	 handleSubmit = evt => {

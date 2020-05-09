@@ -15,7 +15,7 @@ const useStyles = theme => ({
   }
 });
 
-class StoneAdd extends Component {	
+class StoneAdd extends React.Component {	
 	constructor (props) {
       super();
     }

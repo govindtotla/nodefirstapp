@@ -6,7 +6,7 @@ router
 	.get("/colors", ColorController.colors)
 	.get("/color_list", ColorController.color_list)
 	.post("/colors", ColorController.add)
-	.delete("/colors/:colod_id", ColorController.delete);
+	.delete("/colors/:color_id", ColorController.delete);
 
 
 

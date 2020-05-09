@@ -25,13 +25,18 @@ exports.colors = function(req, res) {
 };
 
 
-exports.delete = function(req, res) {
-  var documents = Color.find({}, function(err, docs) {
-    if (err) throw err;
-    res.send(docs);
-    return docs;
-  });
+exports.delete	=	function(req, res) {
+	Color.deleteOne({
+		_id: req.params.color_id
+	}, function(err, color) {
+		if (err)
+			res.send(err);
+
+		res.json({ message: 'Color deleted Successfully!!' });
+	});
 };
+    
+    
 
 exports.add = function(req, res) {
   let color = new Color({

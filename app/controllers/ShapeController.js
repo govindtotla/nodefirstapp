@@ -5,21 +5,29 @@ exports.test = function(req, res) {
 };
 
 exports.shapes = function(req, res) {
-  var documents = Shape.find({}, function(err, docs) {
+  var documents = Shape.find({}, null, {sort: {shape_name: 1}}, function(err, docs) {
     if (err) throw err;
     res.send(docs);
     return docs;
   });
 };
 
+
+exports.shape = function(req, res) {
+	var documents = Shape.findById(req.params.shape_id, function(err, shape) {
+		if (err) throw err;
+	res.send(shape);
+	return shape;
+	});
+};  
+
 exports.delete = function(req, res) {
-  var documents = Shape.remove({
+  var shape = Shape.remove({
 		_id: req.params.shape_id
-	}, function(err, bear) {
+	}, function(err, shape) {
 		if (err)
 			res.send(err);
-
-		res.json({ message: 'Successfully deleted' });
+		res.json({ message: 'Stone Shape deleted Successfully!!' });
 	});
 };
 
@@ -28,11 +36,14 @@ exports.add = function(req, res) {
     shape_name: req.body.shape_name,
     if_ebay: req.body.if_ebay
   });
+  
   shape.save(function(err, shape) {
     if (err) {
       console.log("Unsuccessful");
-    }
-    console.log("Saved!");
+      res.send(err);
+    }   
+    console.log("Shape Saved!");
+    res.json({ shape : shape, message: 'Stone Shape added Successfully' });
   });
 };
 
@@ -40,7 +51,7 @@ exports.put = function(req, res) {
 	Shape.findById(req.params.shape_id, function(err, shape) {
 		if (err)
 			res.send(err);
-		shape.name = req.body.name;
+		shape.shape_name = req.body.shape_name;
 		shape.save(function(err) {
 			if (err)
 				res.send(err);

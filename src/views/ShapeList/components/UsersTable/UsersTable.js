@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import clsx from 'clsx';
+import Router from 'next/router'
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/styles';
 
 import Link from 'next/link';
@@ -20,50 +22,53 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TablePagination
+  TablePagination,
+  Button
 } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-  root: {},
-  content: {
-    padding: 0
-  },
-  inner: {
-    minWidth: 1050
-  },
-  nameContainer: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  actions: {
-    justifyContent: 'flex-end'
-  }
-}));
-
-const UsersTable = props => {
-  const { className, shapes, ...rest } = props;
-
-  const classes = useStyles();
-
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const handleSelectAll = event => {
-    const { shapes } = props;
-
-    let selectedUsers;
-
-    if (event.target.checked) {
-      selectedUsers = shapes.map(shape => shape._id);
-    } else {
-      selectedUsers = [];
+class UsersTable extends Component {
+	
+	constructor (props) {
+		super();
+		this.state = this.getInitialState();
+		this.state.shapes	=	props.shapes;
     }
 
-    setSelectedUsers(selectedUsers);
-  };
+	getInitialState = () => {
+		const initialState = {			
+			shape_name: "",
+			if_ebay: 1,
+			if_ebay_val : [
+				{value: '1', label: 'Yes'},
+				{value: '0', label: 'No' }
+			],
+			rowsPerPage : 10,
+			page : 0,
+			selectedUsers : []
+      };
+      return initialState;
+    };
 
-  const handleSelectOne = (event, id) => {
+    handleChange = event => {
+	// This triggers everytime the input is changed
+		this.setState({
+			...values,
+			[event.target.name]: event.target.value,
+		});
+	};  
+  
+	handleSelectAll = (event, shapes) => {
+		let selectedUsers;
+		if (event.target.checked) {
+			selectedUsers = shapes.map(shape => shape._id);
+		} else {
+			selectedUsers = [];
+		}
+		this.setState({ selectedUsers : selectedUsers });
+	};
+
+  handleSelectOne = (event, id) => {
+	let selectedUsers	=	this.state.selectedUsers;
     const selectedIndex = selectedUsers.indexOf(id);
     let newSelectedUsers = [];
 
@@ -79,94 +84,178 @@ const UsersTable = props => {
         selectedUsers.slice(selectedIndex + 1)
       );
     }
-
-    setSelectedUsers(newSelectedUsers);
+    this.setState({ selectedUsers : newSelectedUsers });
   };
 
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
+	handlePageChange = (event, page) => {
+		this.setState({ page: page });
+	};
 
-  const handleRowsPerPageChange = event => {
-    setRowsPerPage(event.target.value);
-  };
+	handleRowsPerPageChange = event => {
+		this.setState({ rowsPerPage: event.target.value });
+	};  
 
-  return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedUsers.length === shapes.length}
-                      color="primary"
-                      indeterminate={
-                        selectedUsers.length > 0 &&
-                        selectedUsers.length < shapes.length
-                      }
-                      onChange={handleSelectAll}
-                    />
-                  </TableCell>
-                  <TableCell>Stone Shape Name</TableCell>
-                  <TableCell>&nbsp;</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {shapes.slice(0, rowsPerPage).map(shape => (
-                  <TableRow
-                    className={classes.tableRow}
-                    hover
-                    key={shape._id}
-                    selected={selectedUsers.indexOf(shape._id) !== -1}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedUsers.indexOf(shape._id) !== -1}
-                        color="primary"
-                        onChange={event => handleSelectOne(event, shape._id)}
-                        value="true"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.nameContainer}>
-                        <Typography variant="body1">{shape.shape_name}</Typography>
-                      </div>
-                    </TableCell>                    
-                    <TableCell>
-                     <Link href="#"><a><EditIcon color="primary" /></a></Link>
-					  <Link href="#"><a><DeleteIcon color="primary" /></a></Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <CardActions className={classes.actions}>
-        <TablePagination
-          component="div"
-          count={shapes.length}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleRowsPerPageChange}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-      </CardActions>
-    </Card>
-  );
-};
+	handleDelete = event => {
+		let id = event.currentTarget.dataset.id;
+		
+		//making a post request with the fetch API
+		fetch('/api/shapes/' + id, {
+			method: 'DELETE',
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json'
+			} 
+		})
+		.then((res) => {
+		  this.setState((prevState) => ({
+				shapes: prevState.shapes.filter(item => item._id !== id),
+			}));
+		})
+		.catch(error => console.log(error))
+	};
+	
+	handleEdit = event => {	
+		Router.push('/stones');
+		return false;
+		
+		let id = event.currentTarget.dataset.id;
+		
+		//making a post request with the fetch API
+		fetch('/api/shapes/' + id, {
+			method: 'GET',
+			headers: {
+			  'Accept': 'application/json',
+			  'Content-Type': 'application/json'
+			} 
+		})
+		.then((res) => {
+		  let data = res.json();
+			this.setState({
+				showForm:true,
+				edit:true,
+				shape_name: data.shape_name,
+				if_ebay: data.if_ebay,
+				_id: data._id
+			});
+		});
+	};
+  
+  
+  render() {
+
+		const { className, classes, ...rest } = this.props;
+		const { shapes, rowsPerPage, page, selectedUsers } = this.state;
+				
+		return (
+			<Card
+			  {...rest}
+			  className={clsx(classes.root, className)}
+			>
+			  <CardContent className={classes.content}>
+				<PerfectScrollbar>
+				  <div className={classes.inner}>
+					<Table>
+					  <TableHead>
+						<TableRow>
+						  <TableCell padding="checkbox">
+							<Checkbox
+							  checked={selectedUsers.length === shapes.length}
+							  color="primary"
+							  indeterminate={
+								selectedUsers.length > 0 &&
+								selectedUsers.length < shapes.length
+							  }
+							  onChange={event => this.handleSelectAll(event, shapes)}
+							/>
+						  </TableCell>
+						  <TableCell>Stone Shape Name</TableCell>
+						  <TableCell>If Ebay</TableCell>
+						  <TableCell>&nbsp;</TableCell>
+						</TableRow>
+					  </TableHead>
+					  <TableBody>              
+						  {(this.state.rowsPerPage > 0
+							? shapes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+							: shapes
+						  ).map(shape => (
+						  <TableRow
+							className={classes.tableRow}
+							hover
+							key={shape._id}
+							selected={selectedUsers.indexOf(shape._id) !== -1}
+						  >
+							<TableCell padding="checkbox">
+							  <Checkbox
+								checked={selectedUsers.indexOf(shape._id) !== -1}
+								color="primary"
+								onChange={event => this.handleSelectOne(event, shape._id)}
+								value="true"
+							  />
+							</TableCell>
+							<TableCell>
+							  <div className={classes.nameContainer}>
+								<Typography variant="body1">{shape.shape_name}</Typography>
+							  </div>
+							</TableCell> 
+							
+							<TableCell><Typography variant="body1">
+								{(shape.if_ebay == 1) ? 'True' : 'False'}
+							</Typography></TableCell>
+											   
+							<TableCell>                    
+							<Button onClick={this.handleEdit} data-id={shape._id} color="primary" variant="contained">
+								<EditIcon />
+							</Button>
+							
+							&nbsp;&nbsp;
+							<Button onClick={this.handleDelete} data-id={shape._id} color="primary" variant="contained">
+								<DeleteIcon />
+							</Button>
+							</TableCell>
+						  </TableRow>
+						))}
+					  </TableBody>
+					</Table>
+				  </div>
+				</PerfectScrollbar>
+			  </CardContent>
+			  <CardActions className={classes.actions}>
+				<TablePagination
+				  component="div"
+				  count={shapes.length}
+				  onChangePage={this.handlePageChange}
+				  onChangeRowsPerPage={this.handleRowsPerPageChange}
+				  page={page}
+				  rowsPerPage={rowsPerPage}
+				  rowsPerPageOptions={[5, 10, 25]}
+				/>
+			  </CardActions>
+			</Card>
+		  );
+	};
+}
 
 UsersTable.propTypes = {
   className: PropTypes.string,
   shapes: PropTypes.array.isRequired
 };
 
-export default UsersTable;
+const useStyles = theme => ({
+  root: {},
+  content: {
+    padding: 0
+  },
+  inner: {
+    minWidth: 1050
+  },
+  nameContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  actions: {
+    justifyContent: 'flex-end'
+  },
+  button : {}
+});
+
+export default withStyles(useStyles)(UsersTable);

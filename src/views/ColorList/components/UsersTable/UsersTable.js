@@ -23,8 +23,6 @@ import {
   TablePagination
 } from '@material-ui/core';
 
-import { getInitials } from '@helpers';
-
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
@@ -133,7 +131,10 @@ const UsersTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {colors.slice(0, rowsPerPage).map(color => (
+                {(rowsPerPage > 0
+					? colors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+					: colors
+				  ).map(color => (
                   <TableRow
                     className={classes.tableRow}
                     hover

@@ -2,7 +2,7 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var ShapeSchema   = new Schema({
-    name: String,
+    shape_name: String,
     if_ebay : Number
 });
 

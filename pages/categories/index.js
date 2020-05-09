@@ -16,8 +16,8 @@ const Category = props => (
 
 
 Category.getInitialProps = async function() {
-  const res = await fetch('https://images.gemexi.com/frontend/crons/read_sold');
-  const data = await res.json();
+  const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
+const res = await fetch(baseUrl + '/api/categories');
   console.log(`Show data fetched. Count: ${data.length}`);
   return {
     categories: data.map(entry => entry)

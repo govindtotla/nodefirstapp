@@ -30,31 +30,34 @@ class UsersTable extends Component {
 	
 	constructor (props) {
 		super();
-		this.state = this.getInitialState();
-		this.state.shapes	=	props.shapes;
-    }
-
-	getInitialState = () => {
-		const initialState = {			
-			shape_name: "",
-			if_ebay: 1,
-			if_ebay_val : [
-				{value: '1', label: 'Yes'},
-				{value: '0', label: 'No' }
-			],
+		this.state = {			
 			rowsPerPage : 10,
 			page : 0,
-			selectedUsers : []
+			selectedUsers : [],
+			shapes : []
       };
-      return initialState;
-    };
+    }
+    
+    fetchShapes = async () => {
+		try {
+			const response = await fetch('/api/shapes')
+			const json = await response.json()
+			if(!response.ok) {
+				throw { status: response.status, fullError: json } 
+			}
+			this.setState({ shapes : json })
+		}
+		catch(error) {
+			console.error(error)
+		}
+	}
+
+    componentDidMount(){
+		this.fetchShapes();
+	};
 
     handleChange = event => {
-	// This triggers everytime the input is changed
-		this.setState({
-			...values,
-			[event.target.name]: event.target.value,
-		});
+		this.setState({ [event.target.name]: event.target.value });
 	};  
   
 	handleSelectAll = (event, shapes) => {
@@ -97,8 +100,6 @@ class UsersTable extends Component {
 
 	handleDelete = event => {
 		let id = event.currentTarget.dataset.id;
-		
-		//making a post request with the fetch API
 		fetch('/api/shapes/' + id, {
 			method: 'DELETE',
 			headers: {
@@ -112,39 +113,12 @@ class UsersTable extends Component {
 			}));
 		})
 		.catch(error => console.log(error))
-	};
-	
-	handleEdit = event => {	
-		Router.push('/stones');
-		return false;
-		
-		let id = event.currentTarget.dataset.id;
-		
-		//making a post request with the fetch API
-		fetch('/api/shapes/' + id, {
-			method: 'GET',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json'
-			} 
-		})
-		.then((res) => {
-		  let data = res.json();
-			this.setState({
-				showForm:true,
-				edit:true,
-				shape_name: data.shape_name,
-				if_ebay: data.if_ebay,
-				_id: data._id
-			});
-		});
-	};
-  
+	};  
   
   render() {
 
-		const { className, classes, ...rest } = this.props;
-		const { shapes, rowsPerPage, page, selectedUsers, FilterString } = this.state;
+		const { className, selectedValue, classes, ...rest } = this.props;
+		const { shapes, rowsPerPage, page, selectedUsers } = this.state;
 				
 		return (
 			<Card
@@ -170,7 +144,7 @@ class UsersTable extends Component {
 						  </TableCell>
 						  <TableCell>Stone Shape Name</TableCell>
 						  <TableCell>If Ebay</TableCell>
-						  <TableCell>&nbsp; {FilterString}</TableCell>
+						  <TableCell>&nbsp; </TableCell>
 						</TableRow>
 					  </TableHead>
 					  <TableBody>   
@@ -178,7 +152,7 @@ class UsersTable extends Component {
 					  	  {(this.state.rowsPerPage > 0
 							? shapes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							: shapes
-						  ).filter(shape => shape.shape_name.toLowerCase().includes("ba") ).map(shape => (
+						  ).filter(shape => shape.shape_name.toLowerCase().includes(`${selectedValue}`) ).map(shape => (
 						  <TableRow
 							className={classes.tableRow}
 							hover
@@ -203,8 +177,9 @@ class UsersTable extends Component {
 								{(shape.if_ebay == 1) ? 'True' : 'False'}
 							</Typography></TableCell>
 											   
-							<TableCell>                    
-							<Button onClick={this.handleEdit} data-id={shape._id} color="primary" variant="contained">
+							<TableCell>
+							
+							<Button onClick={() => this.props.editShape(shape._id)} data-id={shape._id} color="primary" variant="contained">
 								<EditIcon />
 							</Button>
 							
@@ -237,8 +212,7 @@ class UsersTable extends Component {
 }
 
 UsersTable.propTypes = {
-  className: PropTypes.string,
-  shapes: PropTypes.array.isRequired
+  className: PropTypes.string
 };
 
 const useStyles = theme => ({

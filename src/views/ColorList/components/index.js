@@ -1,3 +1,3 @@
 export { default as UsersTable } from './UsersTable';
 export { default as UsersToolbar } from './UsersToolbar';
-export { default as ColorInput } from './ColorInput';
+export { default as UsersInputbar } from './UsersInputbar';

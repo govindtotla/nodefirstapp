@@ -1,8 +1,9 @@
 import React, { useState, Component } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import { makeStyles } from '@material-ui/styles';
 import { withStyles } from '@material-ui/core/styles';
-import { UsersToolbar, UsersTable } from './components';
+import { UsersToolbar, UsersInputbar, UsersTable } from './components';
 
 const useStyles = theme => ({
   root: {
@@ -15,30 +16,94 @@ const useStyles = theme => ({
 
 class ShapeList extends Component {	
 	constructor (props) {
-      super();     
+      super();
+      this.state = {
+			selectedValue: "",
+			open: false,
+			shape : {
+				_id : "",
+				shape_name : "", 
+				if_ebay : ""
+			},
+			if_ebay_val : [
+				{value: '1', label: 'Yes'},
+				{value: '0', label: 'No' }
+			  ]
+		}
     }
     
-     fetchShapes = () => {
-		  //making a post request with the fetch API
-		  fetch('/api/shapes', {
-			method: 'GET'
+    selectedValueHandler = (selectedValue) => {
+		this.setState({
+			selectedValue
+		})
+	}
+	
+    openHandler = (open) => {
+		this.setState({
+			open
+		});
+		this.setState({
+					shape: {
+						_id : "",
+						shape_name : "", 
+						if_ebay : ""
+					}
+			});
+	}
+	
+	editShape = shapeId => {
+		fetch('/api/shapes/' + shapeId)
+			.then(res => res.json())
+			.then((result) => {
+				this.setState({
+					shape: result,
+					open : true
+				});
 			})
-			.then((res) => {
-			  this.setState({ shapes : res.json() });
-			})
-			.catch(error => console.log(error))
-		};
+			.catch((error) => { console.log(error) } );
+	};
+	
+	onFormSubmit = dataObj => {
+		let data = dataObj.shape;
+		let methd = 'POST';
+		if(data._id != ''){
+		  methd = 'PUT'
+		}
+		fetch('/api/shapes', {
+			method: methd,
+			headers: {
+				  'Accept': 'application/json',
+				  'Content-Type': 'application/json'
+				}, 
+			body: JSON.stringify(data),
+		})
+		.then(res => res.json())
+		.then(result => {
+			this.setState({
+			  open: false
+			});
+			Router.push('/shapes');
+		  },
+		  (error) => {
+			this.setState({ error });
+		  }
+		)
+	  };
 		
     
 	render() {
 		
-		const { classes, shapes, ...rest } = this.props;
+		const { classes, ...rest } = this.props;
+		const { selectedValue, shape, open } = this.state;
+			
 		  return (
 			<div className={classes.root}>
-			  <UsersToolbar shapes={shapes} />
+			  <UsersToolbar selectedValueHandler={this.selectedValueHandler} openHandler={this.openHandler} />
+			  
+			  <UsersInputbar open={open} shape={shape} openHandler={this.openHandler} if_ebay_val={this.state.if_ebay_val} onFormSubmit={this.onFormSubmit} />
 			  
 			  <div className={classes.content}>
-				<UsersTable shapes={shapes} />
+				<UsersTable editShape={this.editShape} selectedValue={selectedValue} />
 			  </div>
 			</div>
 		  );

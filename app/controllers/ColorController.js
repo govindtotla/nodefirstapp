@@ -17,7 +17,7 @@ exports.color_list = function(req, res) {
 };
 
 exports.colors = function(req, res) {
-  var documents = Color.find({}, function(err, docs) {
+  var documents = Color.find({}, null, {sort: {color_name: 1}}, function(err, docs) {
     if (err) throw err;
     res.send(docs);
     return docs;

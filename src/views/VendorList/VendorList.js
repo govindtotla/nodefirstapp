@@ -14,17 +14,17 @@ const useStyles = theme => ({
   }
 });
 
-class ColorList extends Component {	
+class VendorList extends Component {	
 	constructor (props) {
       super();
       this.state = {
 			selectedValue: "",
+			vendors : [],
 			open: false,
-			colors : [],
-			color : {
+			vendor : {
 				_id : "",
-				color_name : "", 
-				color_name_alias : ""
+				vendor_name : "", 
+				vendor_short_code : ""
 			}
 		}
     }
@@ -40,47 +40,47 @@ class ColorList extends Component {
 			open
 		});
 		this.setState({
-				color: {
+				vendor: {
 					_id : "",
-					color_name : "", 
-					color_name_alias : ""
+					vendor_name : "", 
+					vendor_short_code : ""
 				}
 			});
 	}
 	
-	fetchTable = async () => {
-		try {
-			const response = await fetch('/api/colors')
-			const json = await response.json()
-			if(!response.ok) {
-				throw { status: response.status, fullError: json } 
-			}
-			this.setState({ colors : json })
-		}
-		catch(error) {
-			console.error(error)
-		}
-	}
-	
-	editShape = shapeId => {
-		fetch('/api/colors/' + shapeId)
+	editForm = shapeId => {
+		fetch('/api/vendors/' + shapeId)
 			.then(res => res.json())
 			.then((result) => {
 				this.setState({
-					color : result,
+					vendor : result,
 					open : true
 				});
 			})
 			.catch((error) => { console.log(error) } );
 	};
 	
+	fetchTable = async () => {
+		try {
+			const response = await fetch('/api/vendors')
+			const json = await response.json()
+			if(!response.ok) {
+				throw { status: response.status, fullError: json } 
+			}
+			this.setState({ vendors : json })
+		}
+		catch(error) {
+			console.error(error)
+		}
+	}
+	
 	onFormSubmit = dataObj => {
-		let data = dataObj.color;
+		let data = dataObj.vendor;
 		let methd = 'POST';
 		if(data._id != ''){
 		  methd = 'PUT'
 		}
-		fetch('/api/colors', {
+		fetch('/api/vendors', {
 			method: methd,
 			headers: {
 				  'Accept': 'application/json',
@@ -105,24 +105,24 @@ class ColorList extends Component {
 	render() {
 		
 		const { classes, ...rest } = this.props;
-		const { selectedValue, colors, color, open } = this.state;
+		const { selectedValue, vendors, vendor, open } = this.state;
 			
 		  return (
 			<div className={classes.root}>
 			  <UsersToolbar selectedValueHandler={this.selectedValueHandler} openHandler={this.openHandler} />
 			  
-			  <UsersInputbar open={open} color={color} openHandler={this.openHandler} onFormSubmit={this.onFormSubmit} />
+			  <UsersInputbar open={open} vendor={vendor} openHandler={this.openHandler} onFormSubmit={this.onFormSubmit} />
 			  
 			  <div className={classes.content}>
-				<UsersTable colors={colors} fetchTable={this.fetchTable} editShape={this.editShape} selectedValue={selectedValue} />
+				<UsersTable vendors={vendors} fetchTable={this.fetchTable} editForm={this.editForm} selectedValue={selectedValue} />
 			  </div>
 			</div>
 		  );
 	};
 }
 
-ColorList.propTypes = {
+VendorList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(useStyles)(ColorList);
+export default withStyles(useStyles)(VendorList);

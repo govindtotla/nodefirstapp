@@ -31,6 +31,18 @@ router
 
 const FauxController = require("../controllers/FauxController");
 router
-	.get("/faux", FauxController.faux);	
+	.get("/faux", FauxController.faux)
+	.get("/faux_list", FauxController.faux_list);
+	
+	
+		
+const VendorController = require("../controllers/VendorController");
+router
+	.get("/vendors", VendorController.vendors)
+	.get("/vendor_list", VendorController.vendor_list)
+	.post("/vendors", VendorController.add)
+	.delete("/vendors/:vendor_id", VendorController.delete)
+	.get("/vendors/:vendor_id", VendorController.vendor)
+	.put("/vendors", VendorController.update);
 
 module.exports = router;

@@ -10,7 +10,7 @@ const Stones = props => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
-    <StoneList stones={props.stones} />
+    <StoneList preData={props.preData} />
   </Layout>
 );
 
@@ -21,9 +21,14 @@ Stones.getInitialProps = async ({ req }) => {
 	const res = await fetch(baseUrl + '/api/stones');
 	const data = await res.json();
 	
-	console.log(`Show data fetched. Count: ${data.length}`);
+	const res3 = await fetch(baseUrl + '/api/color_list');
+	const color_list = await res3.json();
+	
+	const res2 = await fetch(baseUrl + '/api/faux_list');
+	const faux_list = await res2.json();
+	
 	return {
-		stones: data
+		preData: {faux_list : faux_list, color_list : color_list, stones : data }
 	};
 };
 

@@ -37,23 +37,15 @@ class UsersTable extends Component {
 			colors : []
       };
     }
-    
-    fetchShapes = async () => {
-		try {
-			const response = await fetch('/api/colors')
-			const json = await response.json()
-			if(!response.ok) {
-				throw { status: response.status, fullError: json } 
-			}
-			this.setState({ colors : json })
-		}
-		catch(error) {
-			console.error(error)
+
+    componentDidUpdate(prevProps, prevState) {
+		if (prevProps.colors !== this.props.colors) {
+			this.setState({ colors : this.props.colors });			
 		}
 	}
 
     componentDidMount(){
-		this.fetchShapes();
+		this.props.fetchTable();
 	};
 
     handleChange = event => {

@@ -26,37 +26,39 @@ import {
   Button
 } from '@material-ui/core';
 
-class StoneTable extends Component {
+class UsersTable extends Component {
 	
 	constructor (props) {
 		super();
-		this.state = this.getInitialState();
-		this.state.stones	=	props.stones;
-		this.state.faux_list	=	props.faux_list;
-		this.state.color_list	=	props.color_list;
-    }
-
-	getInitialState = () => {
-		const initialState = {			
+		this.state = {			
 			rowsPerPage : 10,
 			page : 0,
-			selectedUsers : []
+			selectedUsers : [],
+			vendors : []
       };
-      return initialState;
-    };
+    }
+    
+    
+    componentDidUpdate(prevProps, prevState) {
+		console.log(prevProps.vendor);
+		//this.setState({ formData : prevProps.shape });
+		if (prevProps.vendors !== this.props.vendors) {
+			this.setState({ vendors : this.props.vendors });			
+		}
+	}
+
+    componentDidMount(){
+		this.props.fetchTable();
+	};
 
     handleChange = event => {
-	// This triggers everytime the input is changed
-		this.setState({
-			...values,
-			[event.target.name]: event.target.value,
-		});
+		this.setState({ [event.target.name]: event.target.value });
 	};  
   
-	handleSelectAll = (event, stones) => {
+	handleSelectAll = (event, vendors) => {
 		let selectedUsers;
 		if (event.target.checked) {
-			selectedUsers = stones.map(stone => stone._id);
+			selectedUsers = vendors.map(vendor => vendor._id);
 		} else {
 			selectedUsers = [];
 		}
@@ -93,9 +95,7 @@ class StoneTable extends Component {
 
 	handleDelete = event => {
 		let id = event.currentTarget.dataset.id;
-		
-		//making a post request with the fetch API
-		fetch('/api/stones/' + id, {
+		fetch('/api/vendors/' + id, {
 			method: 'DELETE',
 			headers: {
 			  'Accept': 'application/json',
@@ -104,21 +104,16 @@ class StoneTable extends Component {
 		})
 		.then((res) => {
 		  this.setState((prevState) => ({
-				stones: prevState.stones.filter(item => item._id !== id),
+				vendors: prevState.vendors.filter(item => item._id !== id),
 			}));
 		})
 		.catch(error => console.log(error))
-	};
-	
-	handleEdit = event => {	
-		Router.push('/stones');		
-	};
-  
+	};  
   
   render() {
 
-		const { className, classes, ...rest } = this.props;
-		const { stones, faux_list, color_list, rowsPerPage, page, selectedUsers } = this.state;
+		const { className, selectedValue, classes, ...rest } = this.props;
+		const { vendors, rowsPerPage, page, selectedUsers } = this.state;
 				
 		return (
 			<Card
@@ -133,65 +128,58 @@ class StoneTable extends Component {
 						<TableRow>
 						  <TableCell padding="checkbox">
 							<Checkbox
-							  checked={selectedUsers.length === stones.length}
+							  checked={selectedUsers.length === vendors.length}
 							  color="primary"
 							  indeterminate={
 								selectedUsers.length > 0 &&
-								selectedUsers.length < stones.length
+								selectedUsers.length < vendors.length
 							  }
-							  onChange={event => this.handleSelectAll(event, stones)}
+							  onChange={event => this.handleSelectAll(event, vendors)}
 							/>
 						  </TableCell>
-						  <TableCell>Stone Name</TableCell>
-						  <TableCell>Faux </TableCell>
-						  <TableCell>Store Category ID</TableCell>
-						  <TableCell>Stone Colors</TableCell>
-						  <TableCell>&nbsp;</TableCell>
+						  <TableCell>Vendor Name</TableCell>
+						  <TableCell>Short Code</TableCell>
+						  <TableCell>&nbsp; </TableCell>
 						</TableRow>
 					  </TableHead>
-					  <TableBody>              
-						  {(this.state.rowsPerPage > 0
-							? stones.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							: stones
-						  ).map(stone => (
+					  <TableBody>   
+					  
+					  	  {(this.state.rowsPerPage > 0
+							? vendors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+							: vendors
+						  ).filter(vendor => vendor.vendor_name.toLowerCase().includes(`${selectedValue}`) ).map(vendor => (
 						  <TableRow
 							className={classes.tableRow}
 							hover
-							key={stone._id}
-							selected={selectedUsers.indexOf(stone._id) !== -1}
+							key={vendor._id}
+							selected={selectedUsers.indexOf(vendor._id) !== -1}
 						  >
 							<TableCell padding="checkbox">
 							  <Checkbox
-								checked={selectedUsers.indexOf(stone._id) !== -1}
+								checked={selectedUsers.indexOf(vendor._id) !== -1}
 								color="primary"
-								onChange={event => this.handleSelectOne(event, stone._id)}
+								onChange={event => this.handleSelectOne(event, vendor._id)}
 								value="true"
 							  />
 							</TableCell>
 							<TableCell>
 							  <div className={classes.nameContainer}>
-								<Typography variant="body1">{stone.stone_name}</Typography>
+								<Typography variant="body1">{vendor.vendor_name}</Typography>
 							  </div>
 							</TableCell> 
 							
-							<TableCell><Typography variant="body1">{faux_list[stone.faux_id]}</Typography></TableCell>
-							<TableCell><Typography variant="body1">{stone.store_category_id}</Typography></TableCell>
 							<TableCell>
-							
-							{stone.color_id.map((colr) => (
-								<Typography>
-									{color_list[colr]}
-								</Typography>
-							))}
+								<Typography variant="body1">{vendor.vendor_short_code}</Typography>
 							</TableCell>
 											   
-							<TableCell>                    
-							<Button href={'/stones/edit/' + stone._id} color="primary" variant="contained">
+							<TableCell>
+							
+							<Button onClick={() => this.props.editForm(vendor._id)} data-id={vendor._id} color="primary" variant="contained">
 								<EditIcon />
 							</Button>
 							
 							&nbsp;&nbsp;
-							<Button onClick={this.handleDelete} data-id={stone._id} color="primary" variant="contained">
+							<Button onClick={this.handleDelete} data-id={vendor._id} color="primary" variant="contained">
 								<DeleteIcon />
 							</Button>
 							</TableCell>
@@ -205,7 +193,7 @@ class StoneTable extends Component {
 			  <CardActions className={classes.actions}>
 				<TablePagination
 				  component="div"
-				  count={stones.length}
+				  count={vendors.length}
 				  onChangePage={this.handlePageChange}
 				  onChangeRowsPerPage={this.handleRowsPerPageChange}
 				  page={page}
@@ -218,9 +206,8 @@ class StoneTable extends Component {
 	};
 }
 
-StoneTable.propTypes = {
-  className: PropTypes.string,
-  stones: PropTypes.array.isRequired
+UsersTable.propTypes = {
+  className: PropTypes.string
 };
 
 const useStyles = theme => ({
@@ -241,4 +228,4 @@ const useStyles = theme => ({
   button : {}
 });
 
-export default withStyles(useStyles)(StoneTable);
+export default withStyles(useStyles)(UsersTable);

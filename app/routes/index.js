@@ -8,6 +8,18 @@ router
 	.post("/colors", ColorController.add)
 	.delete("/colors/:color_id", ColorController.delete);
 
+/*const CategoryController = require("../controllers/CategoryController");
+router
+	.get("/categories", CategoryController.categories)
+	.get("/categories_list", CategoryController.categories_list)
+	.post("/categories", CategoryController.add)
+	.delete("/categories/:_id", CategoryController.delete);
+*/	
+const CategoryController = require("../controllers/CategoryController");
+router
+.get("/categories", CategoryController.categories)
+.post("/categories", CategoryController.add)
+.delete("/categories/:id", CategoryController.delete);
 
 
 const StoneController = require("../controllers/StoneController");

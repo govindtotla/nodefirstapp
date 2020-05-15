@@ -16,7 +16,9 @@ const StoneList = props => {
 		
   const classes = useStyles();  
   const router  = useRouter();
-  const stones  = props.stones;
+  const stones  = props.preData.stones;
+  const faux_list  = props.preData.faux_list;
+  const color_list  = props.preData.color_list;
   const [open, setOpen] = React.useState(false);
   
   const handleClickOpen = () => {
@@ -31,7 +33,7 @@ const StoneList = props => {
 		<StoneToolbar />
 		
 		<div className={classes.content}>
-			<StoneTable stones={stones} />
+			<StoneTable stones={stones} faux_list={faux_list} color_list={color_list} />
 		</div>
     </div>
   );

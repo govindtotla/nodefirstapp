@@ -11,3 +11,16 @@ exports.faux = function(req, res) {
     return docs;
   });
 };
+
+
+exports.faux_list = function(req, res) {
+  var documents = Faux.find({}, null, {select: {"faux_value": 1, "_id": 1}, sort: {faux_value: 1}}, function(err, docs) {
+    if (err) throw err;
+    
+   	const color_pair = {};
+   	docs.map(function (stock) {
+		color_pair[stock._id] = stock.faux_value;
+	});
+	return res.send(color_pair);
+  });
+};

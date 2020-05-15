@@ -14,21 +14,18 @@ const useStyles = theme => ({
   }
 });
 
-class ShapeList extends Component {	
+class VendorList extends Component {	
 	constructor (props) {
       super();
       this.state = {
 			selectedValue: "",
+			vendors : [],
 			open: false,
-			shape : {
+			vendor : {
 				_id : "",
-				shape_name : "", 
-				if_ebay : ""
-			},
-			if_ebay_val : [
-				{value: '1', label: 'Yes'},
-				{value: '0', label: 'No' }
-			  ]
+				vendor_name : "", 
+				vendor_short_code : ""
+			}
 		}
     }
     
@@ -43,33 +40,47 @@ class ShapeList extends Component {
 			open
 		});
 		this.setState({
-					shape: {
-						_id : "",
-						shape_name : "", 
-						if_ebay : ""
-					}
+				vendor: {
+					_id : "",
+					vendor_name : "", 
+					vendor_short_code : ""
+				}
 			});
 	}
 	
-	editShape = shapeId => {
-		fetch('/api/shapes/' + shapeId)
+	editForm = shapeId => {
+		fetch('/api/vendors/' + shapeId)
 			.then(res => res.json())
 			.then((result) => {
 				this.setState({
-					shape: result,
+					vendor : result,
 					open : true
 				});
 			})
 			.catch((error) => { console.log(error) } );
 	};
 	
+	fetchTable = async () => {
+		try {
+			const response = await fetch('/api/vendors')
+			const json = await response.json()
+			if(!response.ok) {
+				throw { status: response.status, fullError: json } 
+			}
+			this.setState({ vendors : json })
+		}
+		catch(error) {
+			console.error(error)
+		}
+	}
+	
 	onFormSubmit = dataObj => {
-		let data = dataObj.shape;
+		let data = dataObj.vendor;
 		let methd = 'POST';
 		if(data._id != ''){
 		  methd = 'PUT'
 		}
-		fetch('/api/shapes', {
+		fetch('/api/vendors', {
 			method: methd,
 			headers: {
 				  'Accept': 'application/json',
@@ -82,7 +93,7 @@ class ShapeList extends Component {
 			this.setState({
 			  open: false
 			});
-			Router.push('/shapes');
+			this.fetchTable();
 		  },
 		  (error) => {
 			this.setState({ error });
@@ -94,24 +105,24 @@ class ShapeList extends Component {
 	render() {
 		
 		const { classes, ...rest } = this.props;
-		const { selectedValue, shape, open } = this.state;
+		const { selectedValue, vendors, vendor, open } = this.state;
 			
 		  return (
 			<div className={classes.root}>
 			  <UsersToolbar selectedValueHandler={this.selectedValueHandler} openHandler={this.openHandler} />
 			  
-			  <UsersInputbar open={open} shape={shape} openHandler={this.openHandler} if_ebay_val={this.state.if_ebay_val} onFormSubmit={this.onFormSubmit} />
+			  <UsersInputbar open={open} vendor={vendor} openHandler={this.openHandler} onFormSubmit={this.onFormSubmit} />
 			  
 			  <div className={classes.content}>
-				<UsersTable editShape={this.editShape} selectedValue={selectedValue} />
+				<UsersTable vendors={vendors} fetchTable={this.fetchTable} editForm={this.editForm} selectedValue={selectedValue} />
 			  </div>
 			</div>
 		  );
 	};
 }
 
-ShapeList.propTypes = {
+VendorList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(useStyles)(ShapeList);
+export default withStyles(useStyles)(VendorList);

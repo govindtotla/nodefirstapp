@@ -9,7 +9,7 @@ var StoneSchema   = new Schema({
 		stone_name: { type : String , unique : true, required : true, dropDups: true },
 		store_category_id: Number,
 		web_stone_id: String,
-		color_id: String,
+		color_id: { type: Array, required : true },
 		faux_id: { type : String , required : true}
 	});
 module.exports = mongoose.model('Stone', StoneSchema);

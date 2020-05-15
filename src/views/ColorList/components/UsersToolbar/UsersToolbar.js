@@ -1,75 +1,60 @@
-import React, { Component } from 'react';
-
+import React, { useState, Component } from 'react';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { withStyles } from '@material-ui/core/styles';
 import { SearchInput } from '@components';
-import Drawer from '@material-ui/core/Drawer';
-import SaveIcon from '@material-ui/icons/Save';
-
-import {
-  Button,
-  TextField,
-  Card,
-  CardContent,
-  CardActions
-} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 class UsersToolbar extends Component {
 		
 	constructor (props) {
-      super();
-      this.state = this.getInitialState();      
-    }
-
-    getInitialState = () => {		
-      return initialState;
-    };
-
-    handleChange = event => {
-	// This triggers everytime the input is changed
-		this.setState({
-			[event.target.name]: event.target.value,
-		});
-	};
+		super(props);
+	}
 	
-	 handleSubmit = evt => {
-		  evt.preventDefault();
-		  //making a post request with the fetch API
-		  fetch('/api/colors', {
-			method: 'POST',
-			headers: {
-				  'Accept': 'application/json',
-				  'Content-Type': 'application/json'
-			}, 
-			body: JSON.stringify({
-				 color_name:this.state.color_name,
-				 color_alias_name:this.state.color_alias_name
-			   })
-			})
-			.then((res) => {
-			  res.status === 200 ? res.json() : '';
-			  this.setState({ ["add-color"]: false});
-			})			
-			.then(data => console.log(data))
-			.catch(error => console.log(error))
-	  };
+	SearchShape = (event) => {
+		if(typeof this.props.selectedValueHandler !== 'undefined'){
+			this.props.selectedValueHandler(event.target.value.toLowerCase());
+		}
+	}
 	
+	toggleDrawer = (event) => {
+		if(typeof this.props.openHandler !== 'undefined'){
+			this.props.openHandler(true);
+		}
+	}
+			  	
 	render() {
-		const { classes, colors, className, ...rest } = this.props;
-		const toggleDrawer = (anchor, open, data) => event => {
-			if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-			  return;
-			}
-			this.setState({ [anchor]: open, data });
-		};
-				
+		const { classes, className, ...rest } = this.props;
+	
 		return (
-			<div></div>
+			<div		 
+			  className={clsx(classes.root, className)}
+			>
+			  <div className={classes.row}>
+				<span className={classes.spacer} />
+				<Button
+					color="primary"
+					variant="contained"
+					onClick={this.toggleDrawer}
+				>Add Color</Button>
+			  </div>
+			  <div className={classes.row}>
+				<SearchInput
+				  className={classes.searchInput}
+				  placeholder="Search Color"
+				  onChange={this.SearchShape}
+				/>
+			  </div>			           
+			</div>
 			);
 		};
 }
 
-
+UsersToolbar.propTypes = {
+  className: PropTypes.string,
+  classes: PropTypes.object.isRequired
+};
 
 const useStyles = theme => ({
 	  root: {},
@@ -79,9 +64,8 @@ const useStyles = theme => ({
 		alignItems: 'center',
 		marginTop: theme.spacing(1)
 	  },
+	  content: {marginTop: theme.spacing(2)},
 	  spacer: { flexGrow: 1 },
-	  importButton: { marginRight: theme.spacing(1) },
-	  exportButton: { marginRight: theme.spacing(1) },
 	  searchInput: { marginRight: theme.spacing(1) }
 	});	
 export default withStyles(useStyles)(UsersToolbar);

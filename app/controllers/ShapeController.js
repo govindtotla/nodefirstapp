@@ -47,11 +47,12 @@ exports.add = function(req, res) {
   });
 };
 
-exports.put = function(req, res) {
-	Shape.findById(req.params.shape_id, function(err, shape) {
+exports.update = function(req, res) {
+	Shape.findById(req.body._id, function(err, shape) {
 		if (err)
 			res.send(err);
 		shape.shape_name = req.body.shape_name;
+		shape.if_ebay = req.body.if_ebay;
 		shape.save(function(err) {
 			if (err)
 				res.send(err);

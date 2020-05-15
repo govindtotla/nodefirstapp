@@ -17,12 +17,21 @@ exports.color_list = function(req, res) {
 };
 
 exports.colors = function(req, res) {
-  var documents = Color.find({}, function(err, docs) {
+  var documents = Color.find({}, null, {sort: {color_name: 1}}, function(err, docs) {
     if (err) throw err;
     res.send(docs);
     return docs;
   });
 };
+
+
+exports.color = function(req, res) {
+	var documents = Color.findById(req.params.color_id, function(err, color) {
+		if (err) throw err;
+	res.send(color);
+	return color;
+	});
+};  
 
 
 exports.delete	=	function(req, res) {
@@ -53,3 +62,20 @@ exports.add = function(req, res) {
     res.json({ _id : color._id, message: 'Color Successfully Saved' });
   });
 };
+
+
+exports.update = function(req, res) {
+	Color.findById(req.body._id, function(err, color) {
+		if (err)
+			res.send(err);
+		color.color_name = req.body.color_name;
+		color.color_alias_name = req.body.color_alias_name;
+		color.save(function(err) {
+			if (err)
+				res.send(err);
+			res.json({ message: 'Color Name updated!' });
+		});
+	});
+};
+
+

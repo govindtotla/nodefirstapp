@@ -44,7 +44,22 @@ const Sidebar = props => {
   const { open, variant, onClose, className, ...rest } = props;
 
   const classes = useStyles();
-
+	
+	const vendor	=	
+		[
+			{
+				title: 'Vendor',
+				href: '/vendors'
+			},
+			{
+				title: 'Style',
+				href: '/style'
+			},
+			{
+				title: 'Brands',
+				href: '/brands'
+			}
+		];
   const pages = [
     {
       title: 'Dashboard',
@@ -80,7 +95,7 @@ const Sidebar = props => {
       title: 'Price',
       href: '/prices',
       icon: <ListIcon />
-    },
+    },    
     {
       title: 'Products',
       href: '/products',
@@ -120,6 +135,7 @@ const Sidebar = props => {
         <SidebarNav
           className={classes.nav}
           pages={pages}
+          vendor={vendor}
         />        
       </div>
     </Drawer>

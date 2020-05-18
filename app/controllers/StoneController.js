@@ -32,12 +32,7 @@ exports.stone = function(req, res) {
 
 
 exports.add = function(req, res) {
-	let imageFile 			= req.files.file;
-	
-	if(imageFile.mimetype !== 'image/png' && imageFile.mimetype !== 'image/jpg' && imageFile.mimetype !== 'image/jpeg')
-		return res.status(400).send({ message: 'Supported image files are jpeg, jpg, and png' });
-	
-	let ext	=	path.extname(imageFile.name);
+		
 	let stone = new Stone({
 		stone_name: req.body.stone_name,
 		store_category_id: req.body.store_category_id,
@@ -45,9 +40,6 @@ exports.add = function(req, res) {
 		web_stone_id: req.body.web_stone_id,
 		color_id: req.body.color_id.split(',')
 	  });
-	
-	let filename	=	stone._id + ext;
-	let newPath = __basedir + '/public/images/stones/' + filename;
 	
 	stone.save(function(err, stone) {
 		if (err) {
@@ -57,14 +49,39 @@ exports.add = function(req, res) {
 			console.log(err.code + " Unsuccessful");
 			return res.status(400).send(err);
 		}
-		imageFile.mv(newPath, function(err) {
-			if (err) {
-			  return res.status(400).send(err);
-			}
-		});	
-		return res.json({ stone : stone, file: `public/images/stones/${filename}`, message: 'Stone added Successfully' });
+		
+		if ( req.files )
+		{
+			let imageFile 			= req.files.file;		
+			if(imageFile.mimetype !== 'image/png' && imageFile.mimetype !== 'image/jpg' && imageFile.mimetype !== 'image/jpeg')
+				return res.status(400).send({ message: 'Supported image files are jpeg, jpg, and png' });		
+			let ext	=	path.extname(imageFile.name);
+			
+			let filename	=	stone._id + ext;
+			let newPath = __basedir + '/public/images/stones/' + filename;
+		
+			imageFile.mv(newPath, function(err) {
+				if (err) {
+				  return res.status(400).send(err);
+				}
+				stone.stone_image  		= filename;
+				stone.save();
+			});        
+		}
+		return res.json({ stone : stone, message: 'Stone added Successfully' });
 	  });
 	
+};
+
+exports.delete	=	function(req, res) {
+	Stone.deleteOne({
+		_id: req.params.stone_id
+	}, function(err, stone) {
+		if (err)
+			res.send(err);
+
+		res.json({ message: 'Stone deleted Successfully!!' });
+	});
 };
 
 
@@ -88,19 +105,25 @@ exports.update = function(req, res) {
 					}
 				}
 				
-				let imageFile 			= req.files.file;
-				if(imageFile.mimetype !== 'image/png' && imageFile.mimetype !== 'image/jpg' && imageFile.mimetype !== 'image/jpeg')
-					return res.status(400).send({ message: 'Supported image files are jpeg, jpg, and png' });
-				
-				let ext	=	path.extname(imageFile.name);
-		
-				let filename	=	stone._id + ext;
-				let newPath = __basedir + '/public/images/stones/' + filename;
-				imageFile.mv(newPath, function(err) {
-					if (err) {
-					  return res.status(400).send(err);
-					}
-				});
+				if ( req.files )
+				{
+					let imageFile 			= req.files.file;
+					if(imageFile.mimetype !== 'image/png' && imageFile.mimetype !== 'image/jpg' && imageFile.mimetype !== 'image/jpeg')
+						return res.status(400).send({ message: 'Supported image files are jpeg, jpg, and png' });
+					
+					let ext	=	path.extname(imageFile.name);
+			
+					let filename	=	stone._id + ext;
+					let newPath = __basedir + '/public/images/stones/' + filename;
+					imageFile.mv(newPath, function(err) {
+						if (err) {
+						  return res.status(400).send(err);
+						}
+						stone.stone_image  		= filename;
+						stone.save();
+						//Stone.findOneAndUpdate({ _id: stone._id }, { stone_image: filename });						
+					});
+				}			
 				return res.json({ message: 'Stone updated Successfully' });
             });
         });	

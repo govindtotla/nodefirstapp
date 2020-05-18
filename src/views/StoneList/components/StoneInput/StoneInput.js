@@ -64,7 +64,7 @@ class StoneInput extends Component {
 			web_stone_id: ''
 		}		  
       };
-      this.state.colors		=	this.props.preData.colors;
+      this.state.colors	=	this.props.preData.colors;
       this.handleSubmit = this.handleSubmit.bind(this);
     }
     
@@ -76,11 +76,11 @@ class StoneInput extends Component {
 			formData: {
 					stone_name : this.props.preData.formData.stone_name,
 					store_category_id : this.props.preData.formData.store_category_id,
-					color_id : [this.props.preData.formData.color_id],
+					color_id : this.props.preData.formData.color_id,
 					faux_id : this.props.preData.formData.faux_id,
 					web_stone_id : this.props.preData.formData.web_stone_id
 				}
-		});		
+		});	
 	  };
 
     selectHandleChange = event => {	
@@ -148,7 +148,7 @@ class StoneInput extends Component {
 		const faux			=	preData.faux;
 		const web_stones	=	preData.web_stones; 
 		const { loading, formData, colors } = this.state;
-
+		
 		const MenuProps = {
 				PaperProps: {
 					style: {

@@ -43,7 +43,11 @@ class UsersInputbar extends Component {
 	handleSubmit(event) {
 		event.preventDefault();
 		this.props.onFormSubmit(this.state);
-		//this.setState(this.initialState);
+		this.setState({color : {
+			  _id: '',
+			  color_name: '',
+			  color_alias_name: ''
+			 }});
 	}
     
     toggleDrawer = (event) => {

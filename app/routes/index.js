@@ -15,6 +15,7 @@ router
 const StoneController = require("../controllers/StoneController");
 router.get("/stones", StoneController.stones)
 	  .post("/stones", StoneController.add)
+	  .delete("/stones/:stone_id", StoneController.delete)
 	  .get("/stones/:stone_id", StoneController.stone)
 	  .put("/stones/:stone_id", StoneController.update);
 

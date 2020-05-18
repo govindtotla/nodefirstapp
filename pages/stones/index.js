@@ -18,8 +18,6 @@ const Stones = props => (
 Stones.getInitialProps = async ({ req }) => {
 	
 	const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
-	const res = await fetch(baseUrl + '/api/stones');
-	const data = await res.json();
 	
 	const res3 = await fetch(baseUrl + '/api/color_list');
 	const color_list = await res3.json();
@@ -28,7 +26,7 @@ Stones.getInitialProps = async ({ req }) => {
 	const faux_list = await res2.json();
 	
 	return {
-		preData: {faux_list : faux_list, color_list : color_list, stones : data }
+		preData: {faux_list : faux_list, color_list : color_list }
 	};
 };
 

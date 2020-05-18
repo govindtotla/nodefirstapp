@@ -17,6 +17,7 @@ import {
   CardContent,
   Checkbox,
   Table,
+  Avatar,
   TableBody,
   TableCell,
   TableHead,
@@ -30,20 +31,25 @@ class StoneTable extends Component {
 	
 	constructor (props) {
 		super();
-		this.state = this.getInitialState();
-		this.state.stones	=	props.stones;
+		this.state = {			
+			rowsPerPage : 10,
+			page : 0,
+			selectedUsers : [],
+			stones : []
+      };
 		this.state.faux_list	=	props.faux_list;
 		this.state.color_list	=	props.color_list;
     }
-
-	getInitialState = () => {
-		const initialState = {			
-			rowsPerPage : 10,
-			page : 0,
-			selectedUsers : []
-      };
-      return initialState;
-    };
+    
+    componentDidMount(){
+		this.props.fetchTable();
+	};
+	
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.stones !== this.props.stones) {
+			this.setState({ stones : this.props.stones });			
+		}
+	}
 
     handleChange = event => {
 	// This triggers everytime the input is changed
@@ -109,15 +115,11 @@ class StoneTable extends Component {
 		})
 		.catch(error => console.log(error))
 	};
-	
-	handleEdit = event => {	
-		Router.push('/stones');		
-	};
   
   
   render() {
-
-		const { className, classes, ...rest } = this.props;
+		
+		const { className, selectedValue, classes, ...rest } = this.props;
 		const { stones, faux_list, color_list, rowsPerPage, page, selectedUsers } = this.state;
 				
 		return (
@@ -153,7 +155,7 @@ class StoneTable extends Component {
 						  {(this.state.rowsPerPage > 0
 							? stones.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							: stones
-						  ).map(stone => (
+						  ).filter(stone => stone.stone_name.toLowerCase().includes(`${selectedValue}`) ).map(stone => (
 						  <TableRow
 							className={classes.tableRow}
 							hover
@@ -169,20 +171,18 @@ class StoneTable extends Component {
 							  />
 							</TableCell>
 							<TableCell>
-							  <div className={classes.nameContainer}>
-								<Typography variant="body1">{stone.stone_name}</Typography>
-							  </div>
+								  <div className={classes.nameContainer}>
+									<Avatar className={classes.avatar} src={"/images/stones/" + stone.stone_image }></Avatar>
+									<Typography variant="body1">{stone.stone_name}</Typography>
+								  </div>
 							</TableCell> 
 							
 							<TableCell><Typography variant="body1">{faux_list[stone.faux_id]}</Typography></TableCell>
 							<TableCell><Typography variant="body1">{stone.store_category_id}</Typography></TableCell>
 							<TableCell>
-							
-							{stone.color_id.map((colr) => (
-								<Typography>
-									{color_list[colr]}
-								</Typography>
-							))}
+								{stone.color_id.map((colr) => (
+									<Typography>{color_list[colr]}</Typography>
+								))}
 							</TableCell>
 											   
 							<TableCell>                    
@@ -238,7 +238,10 @@ const useStyles = theme => ({
   actions: {
     justifyContent: 'flex-end'
   },
-  button : {}
+  button : {},
+  avatar: {
+    marginRight: theme.spacing(2)
+  }
 });
 
 export default withStyles(useStyles)(StoneTable);

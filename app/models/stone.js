@@ -10,6 +10,7 @@ var StoneSchema   = new Schema({
 		store_category_id: Number,
 		web_stone_id: String,
 		color_id: { type: Array, required : true },
-		faux_id: { type : String , required : true}
+		faux_id: { type : String , required : true},
+		stone_image: { type : String }
 	});
 module.exports = mongoose.model('Stone', StoneSchema);

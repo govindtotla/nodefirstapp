@@ -1,17 +1,17 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
-import React from 'react';
+import React, { useState, Component } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { List, ListItem, Button, ListItemIcon, ListItemText, Collapse, colors } from '@material-ui/core';
 import StarBorder from '@material-ui/icons/StarBorder';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = theme => ({
   root: {},
   item: {
     display: 'flex',
@@ -45,63 +45,93 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.primary.main
     }
   }
-}));
+});
 
-const CustomRouterLink = ({ className, href, hrefAs, children, prefetch }) => (
-  <Link href={href} as={hrefAs}>
-    <a className={className}>{children}</a>
-  </Link>
-);
 
-const SidebarNav = props => {
-  const { pages, vendor, className, ...rest } = props;
-	
-	const [open, setOpen] = React.useState(false);
+
+class SidebarNav extends Component {	
+	constructor (props) {
+      super();
+      this.state = {}
+    }
     
-	const handleClick = () => {
-		setOpen(!open);
-	};
-  const classes = useStyles();
-
-  return (
-    <List {...rest} className={clsx(classes.root, className)}>
-      {pages.map(page => (		
-        <ListItem className={classes.item} disableGutters key={page.title}>
-          <Button
-            activeClassName={classes.active}
-            className={classes.button}
-            component={CustomRouterLink}
-            href={page.href}>
-            <div className={classes.icon}>{page.icon}</div>
-            {page.title}
-          </Button>		  
-        </ListItem>
-      ))}
-      
-      
-      
-		  
-      <ListItem button onClick={handleClick}>		
-			<ListItemText primary="All Vendor Types" />
-			{open ? <ExpandLess /> : <ExpandMore />}
-		</ListItem>
-		<Collapse in={open} timeout="auto" unmountOnExit>
-			<List component="div" disablePadding>
-				{vendor.map(itm => (
-				<ListItem button href={itm.href} component={CustomRouterLink} className={classes.nested}>
-					{itm.title}
-				</ListItem>
-				))}
-			</List>
-		</Collapse>
+    
+    handleClick( item ) {
+		this.setState( prevState => ( 
+		  { [ item ]: !prevState[ item ] } 
+		) )
+	  }
+	 
+	 handler( children ) {
+		const { classes } = this.props
+		const { state } = this
 		
-    </List>
-  );
-};
+		return children.map( ( subOption ) => {
+			  if ( !subOption.children ) {
+				return (
+				  <ListItem className={classes.item} disableGutters key={subOption.title}>
+					  <Button
+						activeClassName={classes.active}
+						className={classes.button}						
+						href={subOption.href}>
+						<div className={classes.icon}>{subOption.icon}</div>
+						{subOption.title}
+					  </Button>					 
+					</ListItem>
+				)
+			  }
+			  return (
+				<div key={ subOption.title }>
+				  <ListItem 
+					button
+					className={classes.item} disableGutters key={subOption.title}
+					onClick={ () => this.handleClick( subOption.title ) }>
+					<div className={classes.icon}>{subOption.icon}</div>
+					<ListItemText 
+						className={classes.button}
+						  primary={ subOption.title } />
+							{ state[ subOption.title ] ? 
+							  <ExpandLess /> :
+							  <ExpandMore />
+							}
+				  </ListItem>
+				  
+				  <Collapse 
+					in={ state[ subOption.title ] } 
+					timeout="auto" 
+					unmountOnExit
+				  >
+					{ this.handler( subOption.children ) }
+				  </Collapse>
+				</div>
+			  )
+			} )
+	  }
+	  
+    render() {		
+		const { pages, classes, className, ...rest } = this.props;
+		const { state } = this;
+			
+		const CustomRouterLink = ({ className, href, hrefAs, children, prefetch }) => (
+				  <Link href={href} as={hrefAs}>
+					<a className={className}>{children}</a>
+				  </Link>
+				);
+		 
+		 return (
+			<div>
+				<List {...rest} className={clsx(classes.root, className)}>				 
+				  { this.handler( pages ) }
+				</List>
+				
+			</div>
+		  );
+	};
+}
 
 SidebarNav.propTypes = {
   className: PropTypes.string,
   pages: PropTypes.array.isRequired
 };
 
-export default SidebarNav;
+export default withStyles(useStyles)(SidebarNav);

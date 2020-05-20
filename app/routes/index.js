@@ -45,5 +45,16 @@ router
 	.delete("/vendors/:vendor_id", VendorController.delete)
 	.get("/vendors/:vendor_id", VendorController.vendor)
 	.put("/vendors", VendorController.update);
+	
+	
+const PriceController = require("../controllers/PriceController");
+router
+	.get("/prices", PriceController.prices)
+	.get("/price_list", PriceController.price_list)
+	.post("/prices", PriceController.add)
+	.delete("/prices/:price_id", PriceController.delete)
+	.get("/prices/:price_id", PriceController.price)
+	.put("/prices", PriceController.update)
+	.post("/import_prices", PriceController.import_prices);
 
 module.exports = router;

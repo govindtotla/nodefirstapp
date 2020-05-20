@@ -12,5 +12,5 @@ var StoneSchema   = new Schema({
 		color_id: { type: Array, required : true },
 		faux_id: { type : String , required : true},
 		stone_image: { type : String }
-	});
+	}, { timestamps: true });
 module.exports = mongoose.model('Stone', StoneSchema);

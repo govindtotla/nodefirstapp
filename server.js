@@ -11,6 +11,7 @@ var next 		= require('next');
 var fileUpload 	= require('express-fileupload');
 var cors 		= require('cors');
 var path 		= require('path');
+var Excel 		= require('exceljs');
 
 var dev 		= process.env.NODE_ENV !== 'production'
 var app 		= next({ dev });
@@ -42,7 +43,7 @@ app.prepare().then(() => {
 	
 	var server = express(); // define our app using express  
 	server.use(bodyParser.urlencoded({ extended: true }));
-	server.use(cors());
+	server.use(cors());	
 	server.use(fileUpload());
 	server.use(bodyParser.json());
 	server.use('/public', express.static(__dirname + '/public'));

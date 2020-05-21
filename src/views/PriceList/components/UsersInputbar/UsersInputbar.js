@@ -19,12 +19,12 @@ class UsersInputbar extends Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			color : {
+			price : {
 			  _id: '',
-			  color_name: '',
-			  color_alias_name: ''
+			  lot_number: '',
+			  lot_price: ''
 			 },
-			 open : false
+			 openPrice : false
 		};
 				
 		this.handleChange = this.handleChange.bind(this);
@@ -32,55 +32,55 @@ class UsersInputbar extends Component {
 	}
 	
 	handleChange = event => {			
-			const { color } = { ...this.state };
+			const { price } = { ...this.state };
 			var objectSize = event.target.name;
 			var newInput = Object.assign({},
-				this.state.color, {[objectSize]: event.target.value }
+				this.state.price, {[objectSize]: event.target.value }
 			);
-			this.setState({ color : newInput });
+			this.setState({ price : newInput });
 		};
 	
 	handleSubmit(event) {
 		event.preventDefault();
 		this.props.onFormSubmit(this.state);
-		this.setState({color : {
+		this.setState({price : {
 			  _id: '',
-			  color_name: '',
-			  color_alias_name: ''
+			  lot_number: '',
+			  lot_price: ''
 			 }});
 	}
     
     toggleDrawer = (event) => {
-		if(typeof this.props.openHandler !== 'undefined'){
-			this.props.openHandler(false);
+		if(typeof this.props.openPriceHandler !== 'undefined'){
+			this.props.openPriceHandler(false);
 		}
 	}
 	
 	componentDidUpdate(prevProps, prevState) {
-		console.log(prevProps.color);
+		//console.log(prevProps.price);
 		//this.setState({ formData : prevProps.shape });
-		if (prevProps.color.color_name !== this.props.color.color_name) {
-			this.setState({ color : this.props.color });			
+		if (prevProps.price.lot_number !== this.props.price.lot_number) {
+			this.setState({ price : this.props.price });			
 		}
 		//console.log(prevState.shape);
 	}
 	  	
 	render() {
-		const { classes, open, className, ...rest } = this.props;
-		const color = this.state.color;
+		const { classes, openPrice, className, ...rest } = this.props;
+		const price = this.state.price;
 		
-		let pageTitle = <h2 id="form-dialog-title">Add Color</h2>;
+		let pageTitle = <h2 id="form-dialog-title">Add Lot Price</h2>;
 		let btnTxt = 'Save';
 		
-		if(color._id) {			
-			pageTitle = <h2 id="form-dialog-title">Edit Color</h2>
+		if(price._id) {			
+			pageTitle = <h2 id="form-dialog-title">Edit Lot Price</h2>
 			btnTxt = 'Update';
 		}
 
 		
 		return (
 			<React.Fragment key="add-color">
-			  <Drawer anchor="right" open={open} onClose={this.toggleDrawer}>
+			  <Drawer anchor="right" open={openPrice} onClose={this.toggleDrawer}>
 				<Card
 				  {...rest}
 				  className={clsx(classes.root, className)}
@@ -90,28 +90,28 @@ class UsersInputbar extends Component {
 					{pageTitle}
 					
 					<form onSubmit={this.handleSubmit} >
-					<form type="hidden" name="_id" value={color._id} />
+					<form type="hidden" name="_id" value={price._id} />
 					  <TextField
 						fullWidth
-						label="Color Name"
-						name="color_name"
+						label="Lot Number"
+						name="lot_number"
 						onChange={this.handleChange}
 						type="text"
 						variant="outlined"
 						required
-						value={color.color_name}
+						value={price.lot_number}
 					  />
 
 					  <TextField
 						fullWidth
-						label="Color Name"
-						name="color_alias_name"
+						label="Price"
+						name="lot_price"
 						onChange={this.handleChange}
 						type="text"
 						style={{ marginTop: '1rem' }}
 						variant="outlined"
 						required
-						value={color.color_alias_name}
+						value={price.lot_price}
 					  />
 
 					  <CardActions>

@@ -17,7 +17,6 @@ import {
   CardContent,
   Checkbox,
   Table,
-  Avatar,
   TableBody,
   TableCell,
   TableHead,
@@ -27,7 +26,7 @@ import {
   Button
 } from '@material-ui/core';
 
-class StoneTable extends Component {
+class UsersTable extends Component {
 	
 	constructor (props) {
 		super();
@@ -35,34 +34,28 @@ class StoneTable extends Component {
 			rowsPerPage : 10,
 			page : 0,
 			selectedUsers : [],
-			stones : []
+			prices : []
       };
-		this.state.faux_list	=	props.faux_list;
-		this.state.color_list	=	props.color_list;
     }
-    
-    componentDidMount(){
-		this.props.fetchTable();
-	};
-	
-	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.stones !== this.props.stones) {
-			this.setState({ stones : this.props.stones });			
+
+    componentDidUpdate(prevProps, prevState) {
+		if (prevProps.prices !== this.props.prices) {
+			this.setState({ prices : this.props.prices });			
 		}
 	}
 
+    componentDidMount(){
+		this.props.fetchTable();
+	};
+
     handleChange = event => {
-	// This triggers everytime the input is changed
-		this.setState({
-			...values,
-			[event.target.name]: event.target.value,
-		});
+		this.setState({ [event.target.name]: event.target.value });
 	};  
   
-	handleSelectAll = (event, stones) => {
+	handleSelectAll = (event, prices) => {
 		let selectedUsers;
 		if (event.target.checked) {
-			selectedUsers = stones.map(stone => stone._id);
+			selectedUsers = prices.map(price => price._id);
 		} else {
 			selectedUsers = [];
 		}
@@ -99,9 +92,7 @@ class StoneTable extends Component {
 
 	handleDelete = event => {
 		let id = event.currentTarget.dataset.id;
-		
-		//making a post request with the fetch API
-		fetch('/api/stones/' + id, {
+		fetch('/api/prices/' + id, {
 			method: 'DELETE',
 			headers: {
 			  'Accept': 'application/json',
@@ -110,17 +101,16 @@ class StoneTable extends Component {
 		})
 		.then((res) => {
 		  this.setState((prevState) => ({
-				stones: prevState.stones.filter(item => item._id !== id),
+				prices: prevState.prices.filter(item => item._id !== id),
 			}));
 		})
 		.catch(error => console.log(error))
-	};
-  
+	};  
   
   render() {
-		
+
 		const { className, selectedValue, classes, ...rest } = this.props;
-		const { stones, faux_list, color_list, rowsPerPage, page, selectedUsers } = this.state;
+		const { prices, rowsPerPage, page, selectedUsers } = this.state;
 				
 		return (
 			<Card
@@ -135,63 +125,58 @@ class StoneTable extends Component {
 						<TableRow>
 						  <TableCell padding="checkbox">
 							<Checkbox
-							  checked={selectedUsers.length === stones.length}
+							  checked={selectedUsers.length === prices.length}
 							  color="primary"
 							  indeterminate={
 								selectedUsers.length > 0 &&
-								selectedUsers.length < stones.length
+								selectedUsers.length < prices.length
 							  }
-							  onChange={event => this.handleSelectAll(event, stones)}
+							  onChange={event => this.handleSelectAll(event, prices)}
 							/>
 						  </TableCell>
-						  <TableCell>Stone Name</TableCell>
-						  <TableCell>Faux </TableCell>
-						  <TableCell>Store Category ID</TableCell>
-						  <TableCell>Stone Colors</TableCell>
-						  <TableCell>&nbsp;</TableCell>
+						  <TableCell>Lot Number</TableCell>
+						  <TableCell>Lot Price</TableCell>
+						  <TableCell>&nbsp; </TableCell>
 						</TableRow>
 					  </TableHead>
-					  <TableBody>              
-						  {(this.state.rowsPerPage > 0
-							? stones.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							: stones
-						  ).filter(stone => stone.stone_name.toLowerCase().includes(`${selectedValue}`) ).map(stone => (
+					  <TableBody>   
+					  
+					  	  {(this.state.rowsPerPage > 0
+							? prices.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+							: prices
+						  ).filter(price => price.lot_number.toLowerCase().includes(`${selectedValue}`) ).map(price => (
 						  <TableRow
 							className={classes.tableRow}
 							hover
-							key={stone._id}
-							selected={selectedUsers.indexOf(stone._id) !== -1}
+							key={price._id}
+							selected={selectedUsers.indexOf(price._id) !== -1}
 						  >
 							<TableCell padding="checkbox">
 							  <Checkbox
-								checked={selectedUsers.indexOf(stone._id) !== -1}
+								checked={selectedUsers.indexOf(price._id) !== -1}
 								color="primary"
-								onChange={event => this.handleSelectOne(event, stone._id)}
+								onChange={event => this.handleSelectOne(event, price._id)}
 								value="true"
 							  />
 							</TableCell>
 							<TableCell>
-								  <div className={classes.nameContainer}>
-									<Avatar className={classes.avatar} src={"/images/stones/" + stone.stone_image }></Avatar>
-									<Typography variant="body1">{stone.stone_name}</Typography>
-								  </div>
+							  <div className={classes.nameContainer}>
+								<Typography variant="body1">{price.lot_number}</Typography>
+							  </div>
 							</TableCell> 
 							
-							<TableCell><Typography variant="body1">{faux_list[stone.faux_id]}</Typography></TableCell>
-							<TableCell><Typography variant="body1">{stone.store_category_id}</Typography></TableCell>
 							<TableCell>
-								{stone.color_id.map((colr) => (
-									<Typography>{color_list[colr]}</Typography>
-								))}
+								<Typography variant="body1">${price.lot_price}</Typography>
 							</TableCell>
 											   
-							<TableCell>                    
-							<Button href={'/stones/edit/' + stone._id} color="primary" variant="contained">
+							<TableCell>
+							
+							<Button onClick={() => this.props.editShape(price._id)} data-id={price._id} color="primary" variant="contained">
 								<EditIcon />
 							</Button>
 							
 							&nbsp;&nbsp;
-							<Button onClick={this.handleDelete} data-id={stone._id} color="primary" variant="contained">
+							<Button onClick={this.handleDelete} data-id={price._id} color="primary" variant="contained">
 								<DeleteIcon />
 							</Button>
 							</TableCell>
@@ -205,7 +190,7 @@ class StoneTable extends Component {
 			  <CardActions className={classes.actions}>
 				<TablePagination
 				  component="div"
-				  count={stones.length}
+				  count={prices.length}
 				  onChangePage={this.handlePageChange}
 				  onChangeRowsPerPage={this.handleRowsPerPageChange}
 				  page={page}
@@ -218,9 +203,8 @@ class StoneTable extends Component {
 	};
 }
 
-StoneTable.propTypes = {
-  className: PropTypes.string,
-  stones: PropTypes.array.isRequired
+UsersTable.propTypes = {
+  className: PropTypes.string
 };
 
 const useStyles = theme => ({
@@ -238,10 +222,7 @@ const useStyles = theme => ({
   actions: {
     justifyContent: 'flex-end'
   },
-  button : {},
-  avatar: {
-    marginRight: theme.spacing(2)
-  }
+  button : {}
 });
 
-export default withStyles(useStyles)(StoneTable);
+export default withStyles(useStyles)(UsersTable);

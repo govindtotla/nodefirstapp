@@ -30,6 +30,7 @@ router
 const StoneController = require("../controllers/StoneController");
 router.get("/stones", StoneController.stones)
 	  .post("/stones", StoneController.add)
+	  .delete("/stones/:stone_id", StoneController.delete)
 	  .get("/stones/:stone_id", StoneController.stone)
 	  .put("/stones/:stone_id", StoneController.update);
 
@@ -59,6 +60,17 @@ router
 	.delete("/vendors/:vendor_id", VendorController.delete)
 	.get("/vendors/:vendor_id", VendorController.vendor)
 	.put("/vendors", VendorController.update);
+	
+	
+const PriceController = require("../controllers/PriceController");
+router
+	.get("/prices", PriceController.prices)
+	.get("/price_list", PriceController.price_list)
+	.post("/prices", PriceController.add)
+	.delete("/prices/:price_id", PriceController.delete)
+	.get("/prices/:price_id", PriceController.price)
+	.put("/prices", PriceController.update)
+	.post("/import_prices", PriceController.import_prices);
 
 const StyleController = require("../controllers/StyleController");
 router

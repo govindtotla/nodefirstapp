@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { SearchInput } from '@components';
 import { Button } from '@material-ui/core';
 
-class StoneToolbar extends Component {
+class UsersToolbar extends Component {
 		
 	constructor (props) {
 		super(props);
@@ -19,8 +19,14 @@ class StoneToolbar extends Component {
 	}
 	
 	toggleDrawer = (event) => {
-		if(typeof this.props.openHandler !== 'undefined'){
-			this.props.openHandler(true);
+		if(typeof this.props.openPriceHandler !== 'undefined'){
+			this.props.openPriceHandler(true);
+		}
+	}
+	
+	toggleImport = (event) => {
+		if(typeof this.props.openImportHandler !== 'undefined'){
+			this.props.openImportHandler(true);
 		}
 	}
 			  	
@@ -33,16 +39,17 @@ class StoneToolbar extends Component {
 			>
 			  <div className={classes.row}>
 				<span className={classes.spacer} />
+				<Button className={classes.importButton} onClick={this.toggleImport}>Import Price</Button>
 				<Button
 					color="primary"
 					variant="contained"
-					href="/stones/add"
-				>Add Stone</Button>
+					onClick={this.toggleDrawer}
+				>Add Price</Button>
 			  </div>
 			  <div className={classes.row}>
 				<SearchInput
 				  className={classes.searchInput}
-				  placeholder="Search Stone"
+				  placeholder="Search Lot Price"
 				  onChange={this.SearchShape}
 				/>
 			  </div>			           
@@ -51,7 +58,7 @@ class StoneToolbar extends Component {
 		};
 }
 
-StoneToolbar.propTypes = {
+UsersToolbar.propTypes = {
   className: PropTypes.string,
   classes: PropTypes.object.isRequired
 };
@@ -66,6 +73,7 @@ const useStyles = theme => ({
 	  },
 	  content: {marginTop: theme.spacing(2)},
 	  spacer: { flexGrow: 1 },
+	  importButton: { marginRight: theme.spacing(1) },
 	  searchInput: { marginRight: theme.spacing(1) }
 	});	
-export default withStyles(useStyles)(StoneToolbar);
+export default withStyles(useStyles)(UsersToolbar);

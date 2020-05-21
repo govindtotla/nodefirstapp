@@ -44,52 +44,67 @@ const Sidebar = props => {
   const { open, variant, onClose, className, ...rest } = props;
 
   const classes = useStyles();
-	
-	const vendor	=	
-		[
-			{
-				title: 'Vendor',
-				href: '/vendors'
-			},
-			{
-				title: 'Style',
-				href: '/styles'
-			},
-			{
-				title: 'Brands',
-				href: '/brands'
-			}
-		];
+
   const pages = [
-    {
+	{
       title: 'Dashboard',
       href: '/dashboard',
       icon: <DashboardIcon />
     },
     {
+      title: 'Vendor Tags',
+      icon: <SettingsIcon />,
+      children : [{
+				title: 'Vendor',
+				href: '/vendors',
+				icon: <ListIcon />
+			},
+			{
+				title: 'Style',
+<<<<<<< HEAD
+				href: '/styles'
+=======
+				href: '/style',
+				icon: <ListIcon />
+>>>>>>> ff6ce3fbb7d906824a5803cb99f4b4f8a3c59614
+			},
+			{
+				title: 'Brands',
+				href: '/brands',
+				icon: <ListIcon />
+			}]
+      
+    },
+    {
+		title : 'Attributes',
+		icon : <SettingsIcon />,
+		children : [
+			{
+			  title: 'Colors',
+			  href: '/colors',
+			  icon: <PaletteIcon />
+			},
+			{
+			  title: 'Shapes',
+			  href: '/shapes',
+			  icon: <ListIcon />
+			},
+			{
+			  title: 'Stones',
+			  href: '/stones',
+			  icon: <ListIcon />
+			},
+			{
+			  title: 'Categories',
+			  href: '/categories',
+			  icon: <ListIcon />
+			}
+		]
+	},    
+    {
       title: 'Users',
       href: '/users',
       icon: <PeopleIcon />
-    },
-    {
-      title: 'Colors',
-      href: '/colors',
-      icon: <PaletteIcon />
-    },
-    {
-      title: 'Shapes',
-      href: '/shapes',
-      icon: <ListIcon />
-    },
-    {
-      title: 'Stones',
-      href: '/stones',
-      icon: <ListIcon />
-    },
-    {
-      title: 'Categories',
-      href: '/categories',
-      icon: <ListIcon />
     },
     {
       title: 'Price',
@@ -117,7 +132,7 @@ const Sidebar = props => {
       icon: <SettingsIcon />
     }
   ];
-
+  
   return (
     <Drawer
       anchor="left"
@@ -135,7 +150,6 @@ const Sidebar = props => {
         <SidebarNav
           className={classes.nav}
           pages={pages}
-          vendor={vendor}
         />        
       </div>
     </Drawer>

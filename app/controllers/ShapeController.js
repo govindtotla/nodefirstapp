@@ -21,12 +21,13 @@ exports.shape = function(req, res) {
 	});
 };  
 
-exports.delete = function(req, res) {
-  var shape = Shape.remove({
+exports.delete	=	function(req, res) {
+	Shape.deleteOne({
 		_id: req.params.shape_id
 	}, function(err, shape) {
 		if (err)
 			res.send(err);
+
 		res.json({ message: 'Stone Shape deleted Successfully!!' });
 	});
 };

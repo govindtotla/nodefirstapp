@@ -53,7 +53,7 @@ const Sidebar = props => {
 			},
 			{
 				title: 'Style',
-				href: '/style'
+				href: '/styles'
 			},
 			{
 				title: 'Brands',

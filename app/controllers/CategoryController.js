@@ -1,28 +1,37 @@
 const Category = require("../models/category");
 
 exports.test = function(req, res) {
-  res.send("Greetings from the category controller!");
+  res.send("Greetings from the Category controller!");
 };
 
 exports.category_list = function(req, res) {
   var documents = Category.find({}, null, {select: {"name": 1, "_id": 1}, sort: {name: 1}}, function(err, docs) {
     if (err) throw err;
     
-   	const category_pair = {};
+   	const color_pair = {};
    	docs.map(function (stock) {
-		category_pair[stock._id] = stock.name;
+		color_pair[stock._id] = stock.name;
 	});
-	return res.send(category_pair);
+	return res.send(color_pair);
   });
 };
 
 exports.categories = function(req, res) {
-  var documents = Category.find({}, function(err, docs) {
+  var documents = Category.find({}, null, {sort: {name: 1}}, function(err, docs) {
     if (err) throw err;
     res.send(docs);
     return docs;
   });
 };
+
+
+exports.category = function(req, res) {
+	var documents = Category.findById(req.params._id, function(err, category) {
+		if (err) throw err;
+	res.send(category);
+	return category;
+	});
+};  
 
 
 exports.delete	=	function(req, res) {
@@ -54,3 +63,21 @@ exports.add = function(req, res) {
     res.json({ _id : category._id, message: 'Category Successfully Saved' });
   });
 };
+
+
+exports.update = function(req, res) {
+	Category.findById(req.body._id, function(err, category) {
+		if (err)
+			res.send(err);
+		category.name = req.body.name;
+		category.ebay_id = req.body.ebay_id;
+		category.store_id = req.body.store_id;
+		category.save(function(err) {
+			if (err)
+				res.send(err);
+			res.json({ message: 'Category Name updated!' });
+		});
+	});
+};
+
+

@@ -71,7 +71,6 @@ class SidebarNav extends Component {
 				return (
 				  <ListItem className={classes.item} disableGutters key={subOption.title}>
 					  <Button
-						activeClassName={classes.active}
 						className={classes.button}						
 						href={subOption.href}>
 						<div className={classes.icon}>{subOption.icon}</div>

@@ -14,18 +14,17 @@ const useStyles = theme => ({
   }
 });
 
-class CategoryList extends Component {	
+class BrandList extends Component {	
 	constructor (props) {
       super();
       this.state = {
 			selectedValue: "",
+			brands : [],
 			open: false,
-			categories : [],
-			category : {
+			brand : {
 				_id : "",
-				name:"",
-				ebay_id : "", 
-				store_id : ""
+				brand_name : "", 
+				brand_short_code : ""
 			}
 		}
     }
@@ -41,48 +40,47 @@ class CategoryList extends Component {
 			open
 		});
 		this.setState({
-				category: {
+				brand: {
 					_id : "",
-					name:"",
-					ebay_id : "", 
-					store_id : ""
+					brand_name : "", 
+					brand_short_code : ""
 				}
 			});
 	}
 	
-	fetchTable = async () => {
-		try {
-			const response = await fetch('/api/categories')
-			const json = await response.json()
-			if(!response.ok) {
-				throw { status: response.status, fullError: json } 
-			}
-			this.setState({ categories : json })
-		}
-		catch(error) {
-			console.error(error)
-		}
-	}
-	
-	editShape = shapeId => {
-		fetch('/api/categories/' + shapeId)
+	editForm = shapeId => {
+		fetch('/api/brands/' + shapeId)
 			.then(res => res.json())
 			.then((result) => {
 				this.setState({
-					category : result,
+					brand : result,
 					open : true
 				});
 			})
 			.catch((error) => { console.log(error) } );
 	};
 	
+	fetchTable = async () => {
+		try {
+			const response = await fetch('/api/brands')
+			const json = await response.json()
+			if(!response.ok) {
+				throw { status: response.status, fullError: json } 
+			}
+			this.setState({ brands : json })
+		}
+		catch(error) {
+			console.error(error)
+		}
+	}
+	
 	onFormSubmit = dataObj => {
-		let data = dataObj.category;
+		let data = dataObj.brand;
 		let methd = 'POST';
 		if(data._id != ''){
 		  methd = 'PUT'
 		}
-		fetch('/api/categories', {
+		fetch('/api/brands', {
 			method: methd,
 			headers: {
 				  'Accept': 'application/json',
@@ -107,24 +105,24 @@ class CategoryList extends Component {
 	render() {
 		
 		const { classes, ...rest } = this.props;
-		const { selectedValue, categories, category, open } = this.state;
+		const { selectedValue, brands, brand, open } = this.state;
 			
 		  return (
 			<div className={classes.root}>
 			  <UsersToolbar selectedValueHandler={this.selectedValueHandler} openHandler={this.openHandler} />
 			  
-			  <UsersInputbar open={open} category={category} openHandler={this.openHandler} onFormSubmit={this.onFormSubmit} />
+			  <UsersInputbar open={open} brand={brand} openHandler={this.openHandler} onFormSubmit={this.onFormSubmit} />
 			  
 			  <div className={classes.content}>
-				<UsersTable categories={categories} fetchTable={this.fetchTable} editShape={this.editShape} selectedValue={selectedValue} />
+				<UsersTable brands={brands} fetchTable={this.fetchTable} editForm={this.editForm} selectedValue={selectedValue} />
 			  </div>
 			</div>
 		  );
 	};
 }
 
-CategoryList.propTypes = {
+BrandList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(useStyles)(CategoryList);
+export default withStyles(useStyles)(BrandList);

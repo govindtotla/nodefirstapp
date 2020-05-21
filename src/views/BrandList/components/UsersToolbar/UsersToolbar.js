@@ -37,12 +37,12 @@ class UsersToolbar extends Component {
 					color="primary"
 					variant="contained"
 					onClick={this.toggleDrawer}
-				>Add Category</Button>
+				>Add Brand</Button>
 			  </div>
 			  <div className={classes.row}>
 				<SearchInput
 				  className={classes.searchInput}
-				  placeholder="Search Category"
+				  placeholder="Search Brand"
 				  onChange={this.SearchShape}
 				/>
 			  </div>			           

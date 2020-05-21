@@ -61,7 +61,7 @@ const Sidebar = props => {
 			},
 			{
 				title: 'Style',
-				href: '/style',
+				href: '/styles',
 				icon: <ListIcon />
 			},
 			{
@@ -113,8 +113,8 @@ const Sidebar = props => {
       icon: <ShoppingBasketIcon />
     },
     {
-      title: 'Authentication',
-      href: '/sign-in',
+      title: 'Login',
+      href: '/login',
       icon: <LockOpenIcon />
     },    
     {

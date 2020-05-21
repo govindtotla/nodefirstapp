@@ -47,12 +47,14 @@ app.prepare().then(() => {
 	server.use(cors());	
 	server.use(fileUpload());
 	server.use(bodyParser.json());
+	server.use(passport.initialize());
+	
+	// Passport config
+	require("./app/config/passport")(passport);
 
 	server.use('/public', express.static(__dirname + '/public'));
 	server.use("/api", routes);
-	server.use(passport.initialize());
 	
-	//var Color     = require('./app/models/color');
 	// middleware to use for all requests
 	server.use(function(req, res, next) {
 		// do logging

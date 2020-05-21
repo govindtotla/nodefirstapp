@@ -19,10 +19,11 @@ class UsersInputbar extends Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			shape : {
+			category : {
 			  _id: '',
-			  shape_name: '',
-			  if_ebay: ''
+			  name:'',
+			  ebay_id: '',
+			  store_id: ''
 			 },
 			 open : false
 		};
@@ -31,17 +32,13 @@ class UsersInputbar extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
-    /*handleChange = event => {
-		this.setState({ [event.target.name]: event.target.value });
-	};*/
-	
 	handleChange = event => {			
-			const { shape } = { ...this.state };
+			const { category } = { ...this.state };
 			var objectSize = event.target.name;
 			var newInput = Object.assign({},
-				this.state.shape, {[objectSize]: event.target.value }
+				this.state.category, {[objectSize]: event.target.value }
 			);
-			this.setState({ shape : newInput });
+			this.setState({ category : newInput });
 		};
 	
 	handleSubmit(event) {
@@ -57,24 +54,22 @@ class UsersInputbar extends Component {
 	}
 	
 	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.shape.shape_name !== this.props.shape.shape_name) {
-			this.setState({ shape : this.props.shape });			
+		if (prevProps.category.name !== this.props.category.name) {
+			this.setState({ category : this.props.category });			
 		}
 	}
-		
+	  	
 	render() {
 		const { classes, open, className, ...rest } = this.props;
-		const shape = this.state.shape;
+		const category = this.state.category;
 		
-		let pageTitle = <h2 id="form-dialog-title">Add Stone Shape</h2>;
+		let pageTitle = <h2 id="form-dialog-title">Add Category</h2>;
 		let btnTxt = 'Save';
 		
-		if(shape._id) {			
-			pageTitle = <h2 id="form-dialog-title">Edit Stone Shape</h2>
+		if(category._id) {			
+			pageTitle = <h2 id="form-dialog-title">Edit Category</h2>
 			btnTxt = 'Update';
-		}
-
-		
+		}		
 		return (
 			<React.Fragment key="add-color">
 			  <Drawer anchor="right" open={open} onClose={this.toggleDrawer}>
@@ -87,41 +82,42 @@ class UsersInputbar extends Component {
 					{pageTitle}
 					
 					<form onSubmit={this.handleSubmit} >
-					<form type="hidden" name="_id" value={shape._id} />
+					<form type="hidden" name="_id" value={category._id} />
 					  <TextField
 						fullWidth
-						label="Shape Name"
-						name="shape_name"
+						label="Category Name"
+						name="name"
 						onChange={this.handleChange}
 						type="text"
 						variant="outlined"
 						required
-						value={shape.shape_name}
+						value={category.name}
+					  />
+
+					  <TextField
+						fullWidth
+						label="Ebay Id"
+						name="ebay_id"
+						onChange={this.handleChange}
+						type="text"
+						style={{ marginTop: '1rem' }}
+						variant="outlined"
+						required
+						value={category.ebay_id}
 					  />
 					  
 					  <TextField
 						fullWidth
-						select
-						label="If Ebay"
-						name="if_ebay"
+						label="Store Id"
+						name="store_id"
 						onChange={this.handleChange}
+						type="text"
 						style={{ marginTop: '1rem' }}
 						variant="outlined"
-						SelectProps={{ native: true }}
 						required
-						value={shape.if_ebay}
-					  >
-					  
-					  {this.props.if_ebay_val.map(option => (
-						  <option
-							key={option.value}
-							value={option.value}
-						  >
-							{option.label}
-						  </option>
-						))}
-					  </TextField>
-					  
+						value={category.store_id}
+					  />
+
 					  <CardActions>
 						  <Button
 							color="primary"

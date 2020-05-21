@@ -10,7 +10,6 @@ import { makeStyles } from '@material-ui/styles';
 import Link from 'next/link';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -41,13 +40,16 @@ class UsersTable extends Component {
 			page : 0,
 			selectedUsers : [],
 			opendialog : false,
-			categories : []
+			styles : []
       };
     }
-
+    
+    
     componentDidUpdate(prevProps, prevState) {
-		if (prevProps.categories !== this.props.categories) {
-			this.setState({ categories : this.props.categories });			
+		console.log(prevProps.vendor);
+		//this.setState({ formData : prevProps.shape });
+		if (prevProps.styles !== this.props.styles) {
+			this.setState({ styles : this.props.styles });			
 		}
 	}
 
@@ -59,10 +61,10 @@ class UsersTable extends Component {
 		this.setState({ [event.target.name]: event.target.value });
 	};  
   
-	handleSelectAll = (event, categories) => {
+	handleSelectAll = (event, styles) => {
 		let selectedUsers;
 		if (event.target.checked) {
-			selectedUsers = categories.map(category => category._id);
+			selectedUsers = styles.map(style => style._id);
 		} else {
 			selectedUsers = [];
 		}
@@ -96,7 +98,7 @@ class UsersTable extends Component {
 	handleRowsPerPageChange = event => {
 		this.setState({ rowsPerPage: event.target.value });
 	};  
-	handleClose = () => {
+	 handleClose = () => {
 		this.setState({ opendialog : false });
 	  };
 	opendialog = event => {
@@ -104,7 +106,7 @@ class UsersTable extends Component {
 	};
 	handleDelete = event => {
 		let id = event.currentTarget.dataset.id;
-		fetch('/api/categories/' + id, {
+		fetch('/api/styles/' + id, {
 			method: 'DELETE',
 			headers: {
 			  'Accept': 'application/json',
@@ -113,7 +115,7 @@ class UsersTable extends Component {
 		})
 		.then((res) => {
 		  this.setState((prevState) => ({
-				categories: prevState.categories.filter(item => item._id !== id),
+				styles: prevState.styles.filter(item => item._id !== id),
 				opendialog : false,
 			}));
 		})
@@ -123,7 +125,7 @@ class UsersTable extends Component {
   render() {
 
 		const { className, selectedValue, classes, ...rest } = this.props;
-		const { categories, rowsPerPage, page, selectedUsers,opendialog,handleClose } = this.state;
+		const { styles, rowsPerPage, page, selectedUsers,opendialog,handleClose } = this.state;
 				
 		return (
 			<Card
@@ -138,64 +140,59 @@ class UsersTable extends Component {
 						<TableRow>
 						  <TableCell padding="checkbox">
 							<Checkbox
-							  checked={selectedUsers.length === categories.length}
+							  checked={selectedUsers.length === styles.length}
 							  color="primary"
 							  indeterminate={
 								selectedUsers.length > 0 &&
-								selectedUsers.length < categories.length
+								selectedUsers.length < styles.length
 							  }
-							  onChange={event => this.handleSelectAll(event, categories)}
+							  onChange={event => this.handleSelectAll(event, styles)}
 							/>
 						  </TableCell>
-						  <TableCell>Category Name</TableCell>
-						  <TableCell>Ebay Id</TableCell>
-						  <TableCell>Store Id</TableCell>
+						  <TableCell>Style Name</TableCell>
+						  <TableCell>Short Code</TableCell>
 						  <TableCell>&nbsp; </TableCell>
 						</TableRow>
 					  </TableHead>
 					  <TableBody>   
 					  
 					  	  {(this.state.rowsPerPage > 0
-							? categories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							: categories
-						  ).filter(category => category.name.toLowerCase().includes(`${selectedValue}`) ).map(category => (
+							? styles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+							: styles
+						  ).filter(style => style.style_name.toLowerCase().includes(`${selectedValue}`) ).map(style => (
 						  <TableRow
 							className={classes.tableRow}
 							hover
-							key={category._id}
-							selected={selectedUsers.indexOf(category._id) !== -1}
+							key={style._id}
+							selected={selectedUsers.indexOf(style._id) !== -1}
 						  >
 							<TableCell padding="checkbox">
 							  <Checkbox
-								checked={selectedUsers.indexOf(category._id) !== -1}
+								checked={selectedUsers.indexOf(style._id) !== -1}
 								color="primary"
-								onChange={event => this.handleSelectOne(event, category._id)}
+								onChange={event => this.handleSelectOne(event, style._id)}
 								value="true"
 							  />
 							</TableCell>
 							<TableCell>
 							  <div className={classes.nameContainer}>
-								<Typography variant="body1">{category.name}</Typography>
+								<Typography variant="body1">{style.style_name}</Typography>
 							  </div>
 							</TableCell> 
 							
 							<TableCell>
-								<Typography variant="body1">{category.ebay_id}</Typography>
-							</TableCell>
-							
-							<TableCell>
-								<Typography variant="body1">{category.store_id}</Typography>
+								<Typography variant="body1">{style.style_short_code}</Typography>
 							</TableCell>
 											   
 							<TableCell>
 							
-							<Button onClick={() => this.props.editShape(category._id)} data-id={category._id} color="primary" variant="contained">
+							<Button onClick={() => this.props.editForm(style._id)} data-id={style._id} color="primary" variant="contained">
 								<EditIcon />
 							</Button>
 							
 							&nbsp;&nbsp;
-													
-							<Button onClick={this.opendialog}  data-id={category._id} color="primary" variant="contained">
+							
+							<Button onClick={this.opendialog}  data-id={style._id} color="primary" variant="contained">
 								<DeleteIcon />
 							</Button>
 							<Dialog
@@ -214,11 +211,13 @@ class UsersTable extends Component {
 								  <Button onClick={this.handleClose} color="primary">
 									Disagree
 								  </Button>
-								  <Button onClick={this.handleDelete} data-id={category._id} color="primary" autoFocus>
+								  <Button onClick={this.handleDelete} data-id={style._id} color="primary" autoFocus>
 									Agree
 								  </Button>
 								</DialogActions>
 							</Dialog>
+										
+										
 							</TableCell>
 						  </TableRow>
 						))}
@@ -230,7 +229,7 @@ class UsersTable extends Component {
 			  <CardActions className={classes.actions}>
 				<TablePagination
 				  component="div"
-				  count={categories.length}
+				  count={styles.length}
 				  onChangePage={this.handlePageChange}
 				  onChangeRowsPerPage={this.handleRowsPerPageChange}
 				  page={page}

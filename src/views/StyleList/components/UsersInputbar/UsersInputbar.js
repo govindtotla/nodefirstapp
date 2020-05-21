@@ -19,10 +19,10 @@ class UsersInputbar extends Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			shape : {
+			style : {
 			  _id: '',
-			  shape_name: '',
-			  if_ebay: ''
+			  style_name: '',
+			  style_short_code: ''
 			 },
 			 open : false
 		};
@@ -31,23 +31,25 @@ class UsersInputbar extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
-    /*handleChange = event => {
-		this.setState({ [event.target.name]: event.target.value });
-	};*/
-	
 	handleChange = event => {			
-			const { shape } = { ...this.state };
+			const { style } = { ...this.state };
 			var objectSize = event.target.name;
 			var newInput = Object.assign({},
-				this.state.shape, {[objectSize]: event.target.value }
+				this.state.style, {[objectSize]: event.target.value }
 			);
-			this.setState({ shape : newInput });
+			this.setState({ style : newInput });
 		};
 	
 	handleSubmit(event) {
 		event.preventDefault();
 		this.props.onFormSubmit(this.state);
-		//this.setState(this.initialState);
+		this.setState({
+				style : {
+					  _id: '',
+					  style_name: '',
+					  style_short_code: ''
+					 }
+				});
 	}
     
     toggleDrawer = (event) => {
@@ -57,20 +59,23 @@ class UsersInputbar extends Component {
 	}
 	
 	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.shape.shape_name !== this.props.shape.shape_name) {
-			this.setState({ shape : this.props.shape });			
+		console.log(prevProps.style);
+		//this.setState({ formData : prevProps.shape });
+		if (prevProps.style.style_name !== this.props.style.style_name) {
+			this.setState({ style : this.props.style });			
 		}
+		//console.log(prevState.shape);
 	}
-		
+	  	
 	render() {
 		const { classes, open, className, ...rest } = this.props;
-		const shape = this.state.shape;
+		const style = this.state.style;
 		
-		let pageTitle = <h2 id="form-dialog-title">Add Stone Shape</h2>;
+		let pageTitle = <h2 id="form-dialog-title">Add Style</h2>;
 		let btnTxt = 'Save';
 		
-		if(shape._id) {			
-			pageTitle = <h2 id="form-dialog-title">Edit Stone Shape</h2>
+		if(style._id) {			
+			pageTitle = <h2 id="form-dialog-title">Edit Style</h2>
 			btnTxt = 'Update';
 		}
 
@@ -87,41 +92,30 @@ class UsersInputbar extends Component {
 					{pageTitle}
 					
 					<form onSubmit={this.handleSubmit} >
-					<form type="hidden" name="_id" value={shape._id} />
+					<form type="hidden" name="_id" value={style._id} />
 					  <TextField
 						fullWidth
-						label="Shape Name"
-						name="shape_name"
+						label="Style Name"
+						name="style_name"
 						onChange={this.handleChange}
 						type="text"
 						variant="outlined"
 						required
-						value={shape.shape_name}
+						value={style.style_name}
 					  />
-					  
+
 					  <TextField
 						fullWidth
-						select
-						label="If Ebay"
-						name="if_ebay"
+						label="Style Short Code"
+						name="style_short_code"
 						onChange={this.handleChange}
+						type="text"
 						style={{ marginTop: '1rem' }}
 						variant="outlined"
-						SelectProps={{ native: true }}
 						required
-						value={shape.if_ebay}
-					  >
-					  
-					  {this.props.if_ebay_val.map(option => (
-						  <option
-							key={option.value}
-							value={option.value}
-						  >
-							{option.label}
-						  </option>
-						))}
-					  </TextField>
-					  
+						value={style.style_short_code}
+					  />
+
 					  <CardActions>
 						  <Button
 							color="primary"

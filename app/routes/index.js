@@ -57,4 +57,14 @@ router
 	.put("/prices", PriceController.update)
 	.post("/import_prices", PriceController.import_prices);
 
+
+
+
+const UserController = require("../controllers/UserController");
+router
+	.post("/register", UserController.register)
+	.post("/login", UserController.login);
+
+
+
 module.exports = router;

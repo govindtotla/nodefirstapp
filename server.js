@@ -12,6 +12,7 @@ var fileUpload 	= require('express-fileupload');
 var cors 		= require('cors');
 var path 		= require('path');
 var Excel 		= require('exceljs');
+var passport 	= require("passport");
 
 var dev 		= process.env.NODE_ENV !== 'production'
 var app 		= next({ dev });
@@ -42,12 +43,14 @@ app.prepare().then(() => {
 	const db = mongoose.connection;
 	
 	var server = express(); // define our app using express  
-	server.use(bodyParser.urlencoded({ extended: true }));
+	server.use(bodyParser.urlencoded({ extended: false }));
 	server.use(cors());	
 	server.use(fileUpload());
 	server.use(bodyParser.json());
+
 	server.use('/public', express.static(__dirname + '/public'));
 	server.use("/api", routes);
+	server.use(passport.initialize());
 	
 	//var Color     = require('./app/models/color');
 	// middleware to use for all requests

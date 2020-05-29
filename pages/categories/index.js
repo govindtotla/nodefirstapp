@@ -19,8 +19,6 @@ Category.getInitialProps = async ({ req }) => {
 	const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
 	const res = await fetch(baseUrl + '/api/categories');
 	const data = await res.json();
-	
-	console.log(`Show data fetched. Count: ${data.length}`);
 	return {
 		categories: data
 	};

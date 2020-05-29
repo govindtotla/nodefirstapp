@@ -2,20 +2,13 @@ import React, { useState, Component } from 'react';
 import clsx from 'clsx';
 import Router from 'next/router'
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { withStyles } from '@material-ui/core/styles';
-import { makeStyles } from '@material-ui/styles';
 
-import Link from 'next/link';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Swal from 'sweetalert2';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle'; 
 
 import {
   Card,
@@ -32,15 +25,15 @@ import {
   Button
 } from '@material-ui/core';
 
+
 class UsersTable extends Component {
 	
-	constructor (props) {
+	constructor (props) {		
 		super();
 		this.state = {			
 			rowsPerPage : 10,
 			page : 0,
-			selectedUsers : [],
-			opendialog : false,
+			selectedUsers : [],		
 			categories : []
       };
     }
@@ -95,36 +88,55 @@ class UsersTable extends Component {
 
 	handleRowsPerPageChange = event => {
 		this.setState({ rowsPerPage: event.target.value });
-	};  
-	handleClose = () => {
-		this.setState({ opendialog : false });
-	  };
-	opendialog = event => {
-		this.setState({ opendialog : true });
-	};
+	}; 
+	 
+	
 	handleDelete = event => {
 		let id = event.currentTarget.dataset.id;
-		fetch('/api/categories/' + id, {
-			method: 'DELETE',
-			headers: {
-			  'Accept': 'application/json',
-			  'Content-Type': 'application/json'
-			} 
-		})
-		.then((res) => {
-		  this.setState((prevState) => ({
-				categories: prevState.categories.filter(item => item._id !== id),
-				opendialog : false,
-			}));
-		})
-		.catch(error => console.log(error))
+		Swal.fire({
+		  title: 'Are you sure?',
+		  text: "You won't be able to revert this!",
+		  icon: 'warning',
+		  showCancelButton: true,
+		  confirmButtonColor: '#3085d6',
+		  cancelButtonColor: '#d33',
+		  confirmButtonText: 'Yes, delete it!'
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  console.log(id);
+			  fetch('/api/categories/' + id, {
+					method: 'DELETE',
+					headers: {
+					  'Accept': 'application/json',
+					  'Content-Type': 'application/json'
+					} 
+				})
+				.then((res) => {					
+				  this.setState((prevState) => ({
+						categories: prevState.categories.filter(item => item._id !== id),
+						opendialog : false,
+					}));
+					
+					Swal.fire(
+						  'Deleted!',
+						  'Your Entry has been deleted.',
+						  'success'
+						);				
+				})
+				.catch(error => console.log(error))
+		  }
+		});
 	};  
   
   render() {
-
 		const { className, selectedValue, classes, ...rest } = this.props;
-		const { categories, rowsPerPage, page, selectedUsers,opendialog,handleClose } = this.state;
-				
+		const { categories, rowsPerPage, page, selectedUsers, deleteDialog } = this.state;
+		
+		const filteredCategories = categories.filter((category) => {
+			  return category.name.toLowerCase().includes(`${selectedValue}`)
+			});
+					
 		return (
 			<Card
 			  {...rest}
@@ -153,12 +165,12 @@ class UsersTable extends Component {
 						  <TableCell>&nbsp; </TableCell>
 						</TableRow>
 					  </TableHead>
-					  <TableBody>   
-					  
-					  	  {(this.state.rowsPerPage > 0
-							? categories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							: categories
-						  ).filter(category => category.name.toLowerCase().includes(`${selectedValue}`) ).map(category => (
+					  <TableBody>
+					  					  
+					  {(this.state.rowsPerPage > 0
+						? filteredCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+						: filteredCategories
+						  ).map(category => (
 						  <TableRow
 							className={classes.tableRow}
 							hover
@@ -195,35 +207,14 @@ class UsersTable extends Component {
 							
 							&nbsp;&nbsp;
 													
-							<Button onClick={this.opendialog}  data-id={category._id} color="primary" variant="contained">
+							<Button onClick={this.handleDelete}  data-id={category._id} color="primary" variant="contained">
 								<DeleteIcon />
-							</Button>
-							<Dialog
-								open={opendialog}
-								onClose={handleClose}
-								aria-labelledby="alert-dialog-title"
-								aria-describedby="alert-dialog-description"
-							  >
-								<DialogTitle id="alert-dialog-title">{"DELETE?"}</DialogTitle>
-								<DialogContent>
-								  <DialogContentText id="alert-dialog-description">
-									Are you Sure you want to delete this item.
-								  </DialogContentText>
-								</DialogContent>
-								<DialogActions>
-								  <Button onClick={this.handleClose} color="primary">
-									Disagree
-								  </Button>
-								  <Button onClick={this.handleDelete} data-id={category._id} color="primary" autoFocus>
-									Agree
-								  </Button>
-								</DialogActions>
-							</Dialog>
+							</Button>														
 							</TableCell>
 						  </TableRow>
 						))}
 					  </TableBody>
-					</Table>
+					</Table>					
 				  </div>
 				</PerfectScrollbar>
 			  </CardContent>
@@ -238,7 +229,7 @@ class UsersTable extends Component {
 				  rowsPerPageOptions={[5, 10, 25]}
 				/>
 			  </CardActions>
-			</Card>
+			</Card>	
 		  );
 	};
 }

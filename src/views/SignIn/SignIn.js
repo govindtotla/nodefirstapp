@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
-// import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
   Button,
   IconButton,
   TextField,
-  // Link,
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
-import { Facebook as FacebookIcon, Google as GoogleIcon } from '@icons';
 
 const schema = {
   email: {
@@ -79,7 +74,7 @@ const useStyles = makeStyles(theme => ({
   contentHeader: {
     display: 'flex',
     alignItems: 'center',
-    paddingTop: theme.spacing(5),
+    paddingTop: theme.spacing(20),
     paddingBototm: theme.spacing(2),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2)
@@ -126,7 +121,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignIn = props => {
-  const { history } = props;
 
   const classes = useStyles();
 
@@ -168,6 +162,8 @@ const SignIn = props => {
         [event.target.name]: true
       }
     }));
+    
+    console.log(formState.isValid);
   };
 
   const handleSignIn = event => {
@@ -185,15 +181,15 @@ const SignIn = props => {
           <div className={classes.quote}>
             <div className={classes.quoteInner}>
               <Typography className={classes.quoteText} variant="h1">
-                Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
-                they sold out High Life.
+                Welcome to the Latest experiance 
+                for Gemexi Inputs
               </Typography>
               <div className={classes.person}>
                 <Typography className={classes.name} variant="body1">
-                  Takamaru Ayako
+                  Gemexi
                 </Typography>
                 <Typography className={classes.bio} variant="body2">
-                  Manager at inVision
+                  Handcrafted Since 1973 
                 </Typography>
               </div>
             </div>
@@ -202,45 +198,20 @@ const SignIn = props => {
         <Grid className={classes.content} item lg={7} xs={12}>
           <div className={classes.content}>
             <div className={classes.contentHeader}>
-              <IconButton onClick={handleBack}>
-                <ArrowBackIcon />
-              </IconButton>
+             
             </div>
             <div className={classes.contentBody}>
               <form className={classes.form} onSubmit={handleSignIn}>
                 <Typography className={classes.title} variant="h2">
                   Sign in
-                </Typography>
-                <Typography color="textSecondary" gutterBottom>
-                  Sign in with social media
-                </Typography>
-                <Grid className={classes.socialButtons} container spacing={2}>
-                  <Grid item>
-                    <Button
-                      color="primary"
-                      onClick={handleSignIn}
-                      size="large"
-                      variant="contained">
-                      <FacebookIcon className={classes.socialIcon} />
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button
-                      onClick={handleSignIn}
-                      size="large"
-                      variant="contained">
-                      <GoogleIcon className={classes.socialIcon} />
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
+                </Typography>               
+                <Grid className={classes.socialButtons} container spacing={2}>&nbsp;</Grid>
                 <Typography
                   align="center"
                   className={classes.sugestion}
                   color="textSecondary"
                   variant="body1">
-                  or login with email address
+                  login with email address
                 </Typography>
                 <TextField
                   className={classes.textField}
@@ -279,13 +250,7 @@ const SignIn = props => {
                   type="submit"
                   variant="contained">
                   Sign in now
-                </Button>
-                <Typography color="textSecondary" variant="body1">
-                  Don't have an account?{' '}
-                  <Link href="/sign-up" variant="h6">
-                    Sign up
-                  </Link>
-                </Typography>
+                </Button>                
               </form>
             </div>
           </div>

@@ -1,18 +1,9 @@
 import React, { useState, Component } from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import { makeStyles } from '@material-ui/styles';
 import { withStyles } from '@material-ui/core/styles';
 import { UsersToolbar, UsersInputbar, UsersTable } from './components';
-
-const useStyles = theme => ({
-  root: {
-    padding: theme.spacing(3)
-  },
-  content: {
-    marginTop: theme.spacing(2)
-  }
-});
+import Swal from 'sweetalert2';
 
 class CategoryList extends Component {	
 	constructor (props) {
@@ -96,6 +87,7 @@ class CategoryList extends Component {
 			  open: false
 			});
 			this.fetchTable();
+			Swal.fire('Added!','Category has been added successfully.','success');
 		  },
 		  (error) => {
 			this.setState({ error });
@@ -116,7 +108,7 @@ class CategoryList extends Component {
 			  <UsersInputbar open={open} category={category} openHandler={this.openHandler} onFormSubmit={this.onFormSubmit} />
 			  
 			  <div className={classes.content}>
-				<UsersTable categories={categories} fetchTable={this.fetchTable} editShape={this.editShape} selectedValue={selectedValue} />
+				<UsersTable categories={categories} fetchTable={this.fetchTable} editShape={this.editShape} selectedValue={selectedValue}  />
 			  </div>
 			</div>
 		  );
@@ -126,5 +118,14 @@ class CategoryList extends Component {
 CategoryList.propTypes = {
   classes: PropTypes.object.isRequired
 };
+
+const useStyles = theme => ({
+  root: {
+    padding: theme.spacing(3)
+  },
+  content: {
+    marginTop: theme.spacing(2)
+  }
+});
 
 export default withStyles(useStyles)(CategoryList);

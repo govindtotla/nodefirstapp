@@ -47,7 +47,6 @@ class UsersTable extends Component {
     
     
     componentDidUpdate(prevProps, prevState) {
-		console.log(prevProps.brand);
 		//this.setState({ formData : prevProps.shape });
 		if (prevProps.brands !== this.props.brands) {
 			this.setState({ brands : this.props.brands });			

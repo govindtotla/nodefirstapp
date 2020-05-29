@@ -44,7 +44,12 @@ class UsersInputbar extends Component {
 	handleSubmit(event) {
 		event.preventDefault();
 		this.props.onFormSubmit(this.state);
-		//this.setState(this.initialState);
+		this.setState({category : {
+			  _id: '',
+			  name:'',
+			  ebay_id: '',
+			  store_id: ''
+			 }});
 	}
     
     toggleDrawer = (event) => {

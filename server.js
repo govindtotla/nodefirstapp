@@ -22,10 +22,10 @@ var port 		= process.env.PORT || 8080;// set our port
 
 global.__basedir = __dirname;
 
-const dbURI = "mongodb+srv://zeit-C90vZchtDVmFzTVrNFetQE9J:Passw0rd@gemexi1-kwqju.mongodb.net";
+const dbURI = process.env.DB_URI;
 const dbOptions = {
 	  useNewUrlParser: true,
-	  dbName: "gemexi1"
+	  dbName: "yourdbname"
 	};
 
 
